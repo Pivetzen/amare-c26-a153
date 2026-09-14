@@ -81,9 +81,15 @@
 
         <!-- ABA 3: AÇÕES E PROJETOS -->
         <section id="aba-acoes" class="hidden space-y-8">
-            <div>
-                <h2 class="text-2xl font-bold text-stone-900">Ações & Projetos</h2>
-                <p class="text-stone-500 text-sm">O que o nosso grupo tem realizado e planeja realizar na comunidade.</p>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-900">Ações & Projetos</h2>
+                    <p class="text-stone-500 text-sm">O que o nosso grupo tem realizado e planeja realizar na comunidade.</p>
+                </div>
+                <!-- Barra de Busca -->
+                <div class="w-full md:w-72">
+                    <input type="text" id="busca-acoes" oninput="filtrarAcoes()" placeholder="Buscar ação ou projeto..." class="w-full bg-white border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-700 focus:border-transparent shadow-sm">
+                </div>
             </div>
 
             <div id="grid-acoes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -115,6 +121,7 @@
     <script>
         const SPREADSHEET_ID = '1bc_VUUks33mKZ67e3mA3O4SLWW_KN9AzTiUkY5ZaKZc';
         let todosOsCasais = [];
+        let todasAsAcoes = [];
 
         function mudarAba(abaId) {
             ['home', 'casais', 'acoes', 'agenda'].forEach(aba => {
@@ -214,7 +221,7 @@
 
             // Carregar Ações e Eventos
             const acoesBrutas = await buscarAbaPlanilha('Ações e Eventos');
-            const acoes = acoesBrutas.map(a => ({
+            todasAsAcoes = acoesBrutas.map(a => ({
                 id: pegarValor(a, ['id', 'codigo']),
                 titulo: pegarValor(a, ['titulo', 'nome', 'acao', 'evento']),
                 data: pegarValor(a, ['data', 'dia', 'quando']),
@@ -223,7 +230,7 @@
                 status: pegarValor(a, ['status', 'estado', 'situacao']),
                 destaque: pegarValor(a, ['destaque', 'importante'])
             }));
-            renderizarAcoes(acoes);
+            renderizarAcoes(todasAsAcoes);
 
             // Carregar Agenda
             const agendaBruta = await buscarAbaPlanilha('agenda');
@@ -279,14 +286,13 @@
         function renderizarAcoes(acoes) {
             const grid = document.getElementById('grid-acoes');
             if (!acoes || acoes.length === 0) {
-                grid.innerHTML = '<p class="text-stone-500">Nenhuma ação ou evento encontrado na planilha.</p>';
+                grid.innerHTML = '<p class="text-stone-500 col-span-full">Nenhuma ação ou projeto encontrado.</p>';
                 return;
             }
 
             grid.innerHTML = acoes.map(acao => {
                 const statusTexto = (acao.status || 'Em andamento').trim().toUpperCase();
                 
-                // Define as cores: Verde se for REALIZADA, Amarelo se for qualquer outra coisa (Em andamento / Planejada)
                 let estiloBadge = "bg-amber-100 text-amber-800";
                 if (statusTexto.includes('REALIZADA')) {
                     estiloBadge = "bg-emerald-100 text-emerald-800";
@@ -306,6 +312,17 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function filtrarAcoes() {
+            const termo = document.getElementById('busca-acoes').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const acoesFiltradas = todasAsAcoes.filter(a => {
+                const titulo = (a.titulo || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const descricao = (a.descricao || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const status = (a.status || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return titulo.includes(termo) || descricao.includes(termo) || status.includes(termo);
+            });
+            renderizarAcoes(acoesFiltradas);
         }
 
         function renderizarAgenda(agenda) {
