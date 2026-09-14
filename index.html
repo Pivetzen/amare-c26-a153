@@ -67,7 +67,6 @@
                 <p class="text-stone-500 text-sm">Conheça os rostos e corações que compõem o nosso grupo.</p>
             </div>
 
-            <!-- Filtros com IDs para controle de estado ativo -->
             <div class="flex flex-wrap gap-2">
                 <button onclick="filtrarCasais('todos', this)" id="filtro-todos" class="px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition shadow">Todos</button>
                 <button onclick="filtrarCasais('Coordenador', this)" id="filtro-coordenador" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Coordenação</button>
@@ -87,8 +86,8 @@
                 <p class="text-stone-500 text-sm">O que o nosso grupo tem realizado e planeja realizar na comunidade.</p>
             </div>
 
-            <div id="grid-acoes" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <p class="text-stone-500">Carregando ações...</p>
+            <div id="grid-acoes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <p class="text-stone-500">Carregando ações e eventos...</p>
             </div>
         </section>
 
@@ -202,8 +201,8 @@
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
+            // Carregar Casais
             const dadosCasaisBrutos = await buscarAbaPlanilha('casais');
-            
             todosOsCasais = dadosCasaisBrutos.map(c => ({
                 nome: pegarValor(c, ['nome', 'casal', 'titulo']),
                 categoria: pegarValor(c, ['categoria', 'tipo', 'funcao', 'papel']),
@@ -211,17 +210,22 @@
                 bio: pegarValor(c, ['bio', 'descricao', 'frase', 'mensagem']),
                 detalhe: pegarValor(c, ['detalhe', 'tempo', 'casados', 'ano', 'informacao'])
             }));
-
             renderizarCasais(todosOsCasais);
 
-            const acoesBrutas = await buscarAbaPlanilha('acoes');
+            // Carregar Ações e Eventos (Corrigido para o nome exato da aba na planilha)
+            const acoesBrutas = await buscarAbaPlanilha('Ações e Eventos');
             const acoes = acoesBrutas.map(a => ({
-                status: pegarValor(a, ['status', 'estado']),
-                titulo: pegarValor(a, ['titulo', 'nome', 'acao']),
-                descricao: pegarValor(a, ['descricao', 'detalhe', 'texto'])
+                id: pegarValor(a, ['id', 'codigo']),
+                titulo: pegarValor(a, ['titulo', 'nome', 'acao', 'evento']),
+                data: pegarValor(a, ['data', 'dia', 'quando']),
+                descricao: pegarValor(a, ['descricao', 'detalhe', 'texto']),
+                foto: pegarValor(a, ['foto', 'imagem', 'link', 'url']),
+                status: pegarValor(a, ['status', 'estado', 'situacao']),
+                destaque: pegarValor(a, ['destaque', 'importante'])
             }));
             renderizarAcoes(acoes);
 
+            // Carregar Agenda
             const agendaBruta = await buscarAbaPlanilha('agenda');
             const agenda = agendaBruta.map(ag => ({
                 data: pegarValor(ag, ['data', 'dia', 'quando']),
@@ -253,7 +257,6 @@
         }
 
         function filtrarCasais(categoria, elementoBotao) {
-            // Remove o estilo ativo de todos os botões de filtro
             ['filtro-todos', 'filtro-coordenador', 'filtro-animador', 'filtro-amareano'].forEach(id => {
                 const btn = document.getElementById(id);
                 if (btn) {
@@ -261,12 +264,10 @@
                 }
             });
 
-            // Ativa o botão clicado (cor laranja/âmbar)
             if (elementoBotao) {
                 elementoBotao.className = "px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition shadow";
             }
 
-            // Filtra os dados
             if (categoria === 'todos') {
                 renderizarCasais(todosOsCasais);
             } else {
@@ -278,15 +279,21 @@
         function renderizarAcoes(acoes) {
             const grid = document.getElementById('grid-acoes');
             if (!acoes || acoes.length === 0) {
-                grid.innerHTML = '<p class="text-stone-500">Nenhuma ação encontrada.</p>';
+                grid.innerHTML = '<p class="text-stone-500">Nenhuma ação ou evento encontrado na planilha.</p>';
                 return;
             }
 
             grid.innerHTML = acoes.map(acao => `
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 space-y-3">
-                    <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">${acao.status || 'Ação'}</span>
-                    <h3 class="font-bold text-xl text-stone-900">${acao.titulo || ''}</h3>
-                    <p class="text-stone-600 text-sm">${acao.descricao || ''}</p>
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
+                    <img src="${acao.foto || 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80'}" alt="${acao.titulo || 'Ação'}" class="h-48 w-full object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">${acao.status || 'Evento'}</span>
+                            <span class="text-xs text-stone-400 font-medium">${acao.data || ''}</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-stone-900">${acao.titulo || ''}</h3>
+                        <p class="text-stone-600 text-sm mt-2 flex-grow">${acao.descricao || ''}</p>
+                    </div>
                 </div>
             `).join('');
         }
