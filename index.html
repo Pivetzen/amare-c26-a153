@@ -64,7 +64,7 @@
         <section id="aba-casais" class="hidden space-y-8">
             <div>
                 <h2 class="text-2xl font-bold text-stone-900">Nossa Rede de Casais</h2>
-                <p class="text-stone-500 text-sm">Conheça os rostos e corações que compõem o nosso grupo.</p>
+                <p class="text-stone-500 text-sm">Clique em qualquer casal para ver mais detalhes, idade, filhos e pets.</p>
             </div>
 
             <div class="flex flex-wrap gap-2">
@@ -86,7 +86,6 @@
                     <h2 class="text-2xl font-bold text-stone-900">Ações & Projetos</h2>
                     <p class="text-stone-500 text-sm">O que o nosso grupo tem realizado e planeja realizar na comunidade.</p>
                 </div>
-                <!-- Barra de Busca -->
                 <div class="w-full md:w-72">
                     <input type="text" id="busca-acoes" oninput="filtrarAcoes()" placeholder="Buscar ação ou projeto..." class="w-full bg-white border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-700 focus:border-transparent shadow-sm">
                 </div>
@@ -110,6 +109,49 @@
         </section>
 
     </main>
+
+    <!-- MODAL (POPUP) DE DETALHES DO CASAL -->
+    <div id="modal-casal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all">
+            <div class="relative h-64">
+                <img id="modal-foto" src="" alt="Casal" class="w-full h-full object-cover">
+                <button onclick="fecharModal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition">
+                    ✕
+                </button>
+                <div class="absolute bottom-4 left-4 bg-amber-700 text-white text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider" id="modal-categoria"></div>
+            </div>
+            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                <h3 id="modal-nome" class="text-2xl font-bold text-stone-900"></h3>
+                <p id="modal-bio" class="text-stone-600 text-sm italic border-l-4 border-amber-600 pl-4 py-1"></p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div class="bg-stone-50 p-3 rounded-xl border border-stone-100">
+                        <span class="text-xs text-stone-400 block font-medium">🎂 Idade</span>
+                        <span id="modal-idade" class="text-stone-800 font-semibold text-sm">Não informada</span>
+                    </div>
+                    <div class="bg-stone-50 p-3 rounded-xl border border-stone-100">
+                        <span class="text-xs text-stone-400 block font-medium">💍 Tempo de Casados</span>
+                        <span id="modal-tempo" class="text-stone-800 font-semibold text-sm">Não informado</span>
+                    </div>
+                    <div class="bg-stone-50 p-3 rounded-xl border border-stone-100">
+                        <span class="text-xs text-stone-400 block font-medium">👶 Filhos</span>
+                        <span id="modal-filhos" class="text-stone-800 font-semibold text-sm">Não informado</span>
+                    </div>
+                    <div class="bg-stone-50 p-3 rounded-xl border border-stone-100">
+                        <span class="text-xs text-stone-400 block font-medium">🐾 Pets</span>
+                        <span id="modal-pets" class="text-stone-800 font-semibold text-sm">Não informado</span>
+                    </div>
+                </div>
+
+                <div id="modal-extra-container" class="pt-2 text-xs text-stone-400 border-t border-stone-100">
+                    <span id="modal-extra"></span>
+                </div>
+            </div>
+            <div class="bg-stone-50 px-6 py-4 flex justify-end">
+                <button onclick="fecharModal()" class="bg-stone-800 hover:bg-stone-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition">Fechar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Rodapé -->
     <footer class="bg-stone-900 text-stone-400 py-8 mt-16 text-center text-sm">
@@ -210,12 +252,17 @@
         window.addEventListener('DOMContentLoaded', async () => {
             // Carregar Casais
             const dadosCasaisBrutos = await buscarAbaPlanilha('casais');
-            todosOsCasais = dadosCasaisBrutos.map(c => ({
+            todosOsCasais = dadosCasaisBrutos.map((c, index) => ({
+                id: index,
                 nome: pegarValor(c, ['nome', 'casal', 'titulo']),
                 categoria: pegarValor(c, ['categoria', 'tipo', 'funcao', 'papel']),
                 foto: pegarValor(c, ['foto', 'imagem', 'link', 'url']),
                 bio: pegarValor(c, ['bio', 'descricao', 'frase', 'mensagem']),
-                detalhe: pegarValor(c, ['detalhe', 'tempo', 'casados', 'ano', 'informacao'])
+                detalhe: pegarValor(c, ['detalhe', 'tempo', 'casados', 'ano', 'informacao']),
+                idade: pegarValor(c, ['idade', 'anos']),
+                filhos: pegarValor(c, ['filho', 'filhos', 'criancas']),
+                pets: pegarValor(c, ['pet', 'pets', 'animais', 'cachorro', 'gato']),
+                tempoCasados: pegarValor(c, ['tempo de casado', 'casamento', 'anos de casado', 'tempo'])
             }));
             renderizarCasais(todosOsCasais);
 
@@ -251,16 +298,53 @@
             }
 
             grid.innerHTML = lista.map(casal => `
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
-                    <img src="${casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80'}" alt="${casal.nome || 'Casal'}" class="h-48 w-full object-cover">
+                <div onclick="abrirModal(${casal.id})" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md hover:border-amber-300 transition group">
+                    <div class="overflow-hidden h-48">
+                        <img src="${casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80'}" alt="${casal.nome || 'Casal'}" class="h-full w-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <span class="text-xs font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md w-max mb-2">${casal.categoria || 'Amareano'}</span>
-                        <h3 class="font-bold text-lg text-stone-900">${casal.nome || 'Nome do Casal'}</h3>
+                        <h3 class="font-bold text-lg text-stone-900 group-hover:text-amber-700 transition">${casal.nome || 'Nome do Casal'}</h3>
                         <p class="text-stone-600 text-sm mt-2 flex-grow">"${casal.bio || ''}"</p>
-                        <div class="mt-4 pt-4 border-t border-stone-100 text-xs text-stone-400">${casal.detalhe || ''}</div>
+                        <div class="mt-4 pt-4 border-t border-stone-100 flex justify-between items-center text-xs text-stone-400">
+                            <span>${casal.detalhe || ''}</span>
+                            <span class="text-amber-600 font-medium group-hover:underline">Ver detalhes →</span>
+                        </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function abrirModal(idCasal) {
+            const casal = todosOsCasais.find(c => c.id === idCasal);
+            if (!casal) return;
+
+            document.getElementById('modal-foto').src = casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80';
+            document.getElementById('modal-categoria').innerText = casal.categoria || 'Amareano';
+            document.getElementById('modal-nome').innerText = casal.nome || '';
+            document.getElementById('modal-bio').innerText = casal.bio ? `"${casal.bio}"` : '';
+            
+            document.getElementById('modal-idade').innerText = casal.idade || 'Não informada';
+            document.getElementById('modal-tempo').innerText = casal.tempoCasados || casal.detalhe || 'Não informado';
+            document.getElementById('modal-filhos').innerText = casal.filhos || 'Não informado';
+            document.getElementById('modal-pets').innerText = casal.pets || 'Não informado';
+            document.getElementById('modal-extra').innerText = casal.detalhe ? `Nota: ${casal.detalhe}` : '';
+
+            document.getElementById('modal-casal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-casal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fechar modal ao clicar fora dele
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal-casal');
+            if (event.target === modal) {
+                fecharModal();
+            }
         }
 
         function filtrarCasais(categoria, elementoBotao) {
