@@ -87,7 +87,7 @@
             </div>
 
             <div id="grid-acoes" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <p class="text-stone-500">Carregando ações diretamente da planilha...</p>
+                <p class="text-stone-500">Carregando ações...</p>
             </div>
         </section>
 
@@ -99,7 +99,7 @@
             </div>
 
             <div id="lista-agenda" class="bg-white rounded-2xl shadow-sm border border-stone-200 divide-y divide-stone-100">
-                <p class="p-6 text-stone-500">Carregando agenda diretamente da planilha...</p>
+                <p class="p-6 text-stone-500">Carregando agenda...</p>
             </div>
         </section>
 
@@ -111,9 +111,9 @@
         <p class="mt-1 text-stone-500">Unidos pela fé e pelo amor.</p>
     </footer>
 
-    <!-- Lógica de Leitura Direta do Google Sheets (GViz API) -->
+    <!-- Lógica Inteligente de Leitura do Google Sheets -->
     <script>
-        const SPREADSHIELD_ID = '1bc_VUUks33mKZ67e3mA3O4SLWW_KN9AzTiUkY5ZaKZc';
+        const SPREADSHEET_ID = '1bc_VUUks33mKZ67e3mA3O4SLWW_KN9AzTiUkY5ZaKZc';
         let todosOsCasais = [];
 
         function mudarAba(abaId) {
@@ -133,10 +133,9 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Função genérica para buscar dados de uma aba específica da planilha usando CSV público
         async function buscarAbaPlanilha(nomeAba) {
             try {
-                const url = `https://docs.google.com/spreadsheets/d/${SPREADSHIELD_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(nomeAba)}`;
+                const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(nomeAba)}`;
                 const resposta = await fetch(url);
                 const textoCsv = await resposta.text();
                 return converterCsvParaObjeto(textoCsv);
@@ -146,12 +145,10 @@
             }
         }
 
-        // Conversor simples de CSV gerado pelo Google para lista de objetos JSON
         function converterCsvParaObjeto(csv) {
             const linhas = csv.split('\n');
             if (linhas.length < 2) return [];
 
-            // Função para lidar com colunas que contêm vírgulas entre aspas
             const parseLinha = (linha) => {
                 const result = [];
                 let cur = '';
@@ -171,9 +168,15 @@
                 return result;
             };
 
-            const cabecalho = parseLinha(linhas[0]).map(h => h.toLowerCase());
-            const dados = [];
+            const cabecalhoOriginal = parseLinha(linhas[0]);
+            // Normaliza os cabeçalhos para procurar independentemente de maiúsculas/minúsculas e acentos
+            const cabecalho = cabecalhoOriginal.map(h => 
+                h.toLowerCase()
+                 .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                 .trim()
+            );
 
+            const dados = [];
             for (let i = 1; i < linhas.length; i++) {
                 if (!linhas[i].trim()) continue;
                 const valores = parseLinha(linhas[i]);
@@ -186,18 +189,48 @@
             return dados;
         }
 
-        // Inicialização ao carregar a página
+        // Função auxiliar para encontrar a propriedade correta independente do nome exato da coluna na planilha
+        function pegarValor(obj, chavesPossiveis) {
+            for (let chave of chavesPossiveis) {
+                const chaveNormalizada = chave.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                for (let prop in obj) {
+                    if (prop.includes(chaveNormalizada)) {
+                        return obj[prop];
+                    }
+                }
+            }
+            return '';
+        }
+
         window.addEventListener('DOMContentLoaded', async () => {
-            // Carregar Casais (espera-se que a aba se chame "casais")
-            todosOsCasais = await buscarAbaPlanilha('casais');
+            const dadosCasaisBrutos = await buscarAbaPlanilha('casais');
+            
+            // Mapeia inteligentemente independentemente de como as colunas foram nomeadas na planilha
+            todosOsCasais = dadosCasaisBrutos.map(c => ({
+                nome: pegarValor(c, ['nome', 'casal', 'titulo']),
+                categoria: pegarValor(c, ['categoria', 'tipo', 'funcao', 'papel']),
+                foto: pegarValor(c, ['foto', 'imagem', 'link', 'url']),
+                bio: pegarValor(c, ['bio', 'descricao', 'frase', 'mensagem']),
+                detalhe: pegarValor(c, ['detalhe', 'tempo', 'casados', 'ano', 'informacao'])
+            }));
+
             renderizarCasais(todosOsCasais);
 
-            // Carregar Ações (espera-se que a aba se chame "acoes")
-            const acoes = await buscarAbaPlanilha('acoes');
+            const acoesBrutas = await buscarAbaPlanilha('acoes');
+            const acoes = acoesBrutas.map(a => ({
+                status: pegarValor(a, ['status', 'estado']),
+                titulo: pegarValor(a, ['titulo', 'nome', 'acao']),
+                descricao: pegarValor(a, ['descricao', 'detalhe', 'texto'])
+            }));
             renderizarAcoes(acoes);
 
-            // Carregar Agenda (espera-se que a aba se chame "agenda")
-            const agenda = await buscarAbaPlanilha('agenda');
+            const agendaBruta = await buscarAbaPlanilha('agenda');
+            const agenda = agendaBruta.map(ag => ({
+                data: pegarValor(ag, ['data', 'dia', 'quando']),
+                titulo: pegarValor(ag, ['titulo', 'evento', 'encontro']),
+                descricao: pegarValor(ag, ['descricao', 'local', 'detalhe', 'tema']),
+                tag: pegarValor(ag, ['tag', 'status', 'confirmacao'])
+            }));
             renderizarAgenda(agenda);
         });
 
@@ -213,7 +246,7 @@
                     <img src="${casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80'}" alt="${casal.nome || 'Casal'}" class="h-48 w-full object-cover">
                     <div class="p-6 flex flex-col flex-grow">
                         <span class="text-xs font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md w-max mb-2">${casal.categoria || 'Amareano'}</span>
-                        <h3 class="font-bold text-lg text-stone-900">${casal.nome || ''}</h3>
+                        <h3 class="font-bold text-lg text-stone-900">${casal.nome || 'Nome do Casal'}</h3>
                         <p class="text-stone-600 text-sm mt-2 flex-grow">"${casal.bio || ''}"</p>
                         <div class="mt-4 pt-4 border-t border-stone-100 text-xs text-stone-400">${casal.detalhe || ''}</div>
                     </div>
@@ -225,7 +258,7 @@
             if (categoria === 'todos') {
                 renderizarCasais(todosOsCasais);
             } else {
-                const filtrados = todosOsCasais.filter(c => c.categoria && c.categoria.toLowerCase() === categoria.toLowerCase());
+                const filtrados = todosOsCasais.filter(c => c.categoria && c.categoria.toLowerCase().includes(categoria.toLowerCase()));
                 renderizarCasais(filtrados);
             }
         }
@@ -233,13 +266,13 @@
         function renderizarAcoes(acoes) {
             const grid = document.getElementById('grid-acoes');
             if (!acoes || acoes.length === 0) {
-                grid.innerHTML = '<p class="text-stone-500">Nenhuma ação encontrada na aba "acoes".</p>';
+                grid.innerHTML = '<p class="text-stone-500">Nenhuma ação encontrada.</p>';
                 return;
             }
 
             grid.innerHTML = acoes.map(acao => `
                 <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 space-y-3">
-                    <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">${acao.status || ''}</span>
+                    <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">${acao.status || 'Ação'}</span>
                     <h3 class="font-bold text-xl text-stone-900">${acao.titulo || ''}</h3>
                     <p class="text-stone-600 text-sm">${acao.descricao || ''}</p>
                 </div>
@@ -249,7 +282,7 @@
         function renderizarAgenda(agenda) {
             const lista = document.getElementById('lista-agenda');
             if (!agenda || agenda.length === 0) {
-                lista.innerHTML = '<p class="p-6 text-stone-500">Nenhum evento encontrado na aba "agenda".</p>';
+                lista.innerHTML = '<p class="p-6 text-stone-500">Nenhum evento encontrado.</p>';
                 return;
             }
 
