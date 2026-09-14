@@ -67,11 +67,12 @@
                 <p class="text-stone-500 text-sm">Conheça os rostos e corações que compõem o nosso grupo.</p>
             </div>
 
+            <!-- Filtros com IDs para controle de estado ativo -->
             <div class="flex flex-wrap gap-2">
-                <button onclick="filtrarCasais('todos')" class="px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition">Todos</button>
-                <button onclick="filtrarCasais('Coordenador')" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Coordenação</button>
-                <button onclick="filtrarCasais('Animador')" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Animadores</button>
-                <button onclick="filtrarCasais('Amareano')" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Amareanos</button>
+                <button onclick="filtrarCasais('todos', this)" id="filtro-todos" class="px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition shadow">Todos</button>
+                <button onclick="filtrarCasais('Coordenador', this)" id="filtro-coordenador" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Coordenação</button>
+                <button onclick="filtrarCasais('Animador', this)" id="filtro-animador" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Animadores</button>
+                <button onclick="filtrarCasais('Amareano', this)" id="filtro-amareano" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Amareanos</button>
             </div>
 
             <div id="grid-casais" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -111,7 +112,7 @@
         <p class="mt-1 text-stone-500">Unidos pela fé e pelo amor.</p>
     </footer>
 
-    <!-- Lógica Inteligente de Leitura do Google Sheets -->
+    <!-- Lógica JavaScript -->
     <script>
         const SPREADSHEET_ID = '1bc_VUUks33mKZ67e3mA3O4SLWW_KN9AzTiUkY5ZaKZc';
         let todosOsCasais = [];
@@ -169,7 +170,6 @@
             };
 
             const cabecalhoOriginal = parseLinha(linhas[0]);
-            // Normaliza os cabeçalhos para procurar independentemente de maiúsculas/minúsculas e acentos
             const cabecalho = cabecalhoOriginal.map(h => 
                 h.toLowerCase()
                  .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -189,7 +189,6 @@
             return dados;
         }
 
-        // Função auxiliar para encontrar a propriedade correta independente do nome exato da coluna na planilha
         function pegarValor(obj, chavesPossiveis) {
             for (let chave of chavesPossiveis) {
                 const chaveNormalizada = chave.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -205,7 +204,6 @@
         window.addEventListener('DOMContentLoaded', async () => {
             const dadosCasaisBrutos = await buscarAbaPlanilha('casais');
             
-            // Mapeia inteligentemente independentemente de como as colunas foram nomeadas na planilha
             todosOsCasais = dadosCasaisBrutos.map(c => ({
                 nome: pegarValor(c, ['nome', 'casal', 'titulo']),
                 categoria: pegarValor(c, ['categoria', 'tipo', 'funcao', 'papel']),
@@ -254,7 +252,21 @@
             `).join('');
         }
 
-        function filtrarCasais(categoria) {
+        function filtrarCasais(categoria, elementoBotao) {
+            // Remove o estilo ativo de todos os botões de filtro
+            ['filtro-todos', 'filtro-coordenador', 'filtro-animador', 'filtro-amareano'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.className = "px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition";
+                }
+            });
+
+            // Ativa o botão clicado (cor laranja/âmbar)
+            if (elementoBotao) {
+                elementoBotao.className = "px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition shadow";
+            }
+
+            // Filtra os dados
             if (categoria === 'todos') {
                 renderizarCasais(todosOsCasais);
             } else {
