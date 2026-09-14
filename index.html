@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amare - C26 - A153</title>
-    <!-- Tailwind CSS para um design moderno -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -19,12 +19,11 @@
             <div class="flex items-center space-x-3 mb-3 sm:mb-0">
                 <span class="text-2xl font-bold tracking-wider">❤️ AMARE <span class="text-amber-200 text-sm font-normal">| C26 - A153</span></span>
             </div>
-            <!-- Navegação por Abas -->
             <nav class="flex space-x-1 sm:space-x-2 bg-amber-800/60 p-1 rounded-xl text-sm font-medium">
                 <button onclick="mudarAba('home')" id="btn-home" class="px-4 py-2 rounded-lg transition bg-white text-amber-900 shadow">Início</button>
-                <button onclick="mudarAba('casais')" id="btn-casais" class="px-4 py-2 rounded-lg transition hover:bg-amber-700/80">Casais</button>
-                <button onclick="mudarAba('acoes')" id="btn-acoes" class="px-4 py-2 rounded-lg transition hover:bg-amber-700/80">Ações & Projetos</button>
-                <button onclick="mudarAba('agenda')" id="btn-agenda" class="px-4 py-2 rounded-lg transition hover:bg-amber-700/80">Agenda</button>
+                <button onclick="mudarAba('casais')" id="btn-casais" class="px-4 py-2 rounded-lg transition hover:bg-amber-700/80 text-stone-200">Casais</button>
+                <button onclick="mudarAba('acoes')" id="btn-acoes" class="px-4 py-2 rounded-lg transition hover:bg-amber-700/80 text-stone-200">Ações & Projetos</button>
+                <button onclick="mudarAba('agenda')" id="btn-agenda" class="px-4 py-2 rounded-lg transition hover:bg-amber-700/80 text-stone-200">Agenda</button>
             </nav>
         </div>
     </header>
@@ -68,7 +67,6 @@
                 <p class="text-stone-500 text-sm">Conheça os rostos e corações que compõem o nosso grupo.</p>
             </div>
 
-            <!-- Filtros por Categoria -->
             <div class="flex flex-wrap gap-2">
                 <button onclick="filtrarCasais('todos')" class="px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition">Todos</button>
                 <button onclick="filtrarCasais('Coordenador')" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Coordenação</button>
@@ -76,38 +74,8 @@
                 <button onclick="filtrarCasais('Amareano')" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Amareanos</button>
             </div>
 
-            <!-- Grid de Perfis -->
             <div id="grid-casais" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Os cards serão injetados via JavaScript ou podem ser listados aqui estaticamente -->
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
-                    <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80" alt="Casal" class="h-48 w-full object-cover">
-                    <div class="p-6 flex flex-col flex-grow">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md w-max mb-2">Coordenador</span>
-                        <h3 class="font-bold text-lg text-stone-900">João & Maria</h3>
-                        <p class="text-stone-600 text-sm mt-2 flex-grow">"Servir ao Senhor com alegria é o nosso maior lema."</p>
-                        <div class="mt-4 pt-4 border-t border-stone-100 text-xs text-stone-400">Casados há 12 anos</div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
-                    <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80" alt="Casal" class="h-48 w-full object-cover">
-                    <div class="p-6 flex flex-col flex-grow">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md w-max mb-2">Animador</span>
-                        <h3 class="font-bold text-lg text-stone-900">Carlos & Ana</h3>
-                        <p class="text-stone-600 text-sm mt-2 flex-grow">"Animando corações e fortalecendo a caminhada em comunidade."</p>
-                        <div class="mt-4 pt-4 border-t border-stone-100 text-xs text-stone-400">Casados há 8 anos</div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Casal" class="h-48 w-full object-cover">
-                    <div class="p-6 flex flex-col flex-grow">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md w-max mb-2">Amareano</span>
-                        <h3 class="font-bold text-lg text-stone-900">Marcos & Juliana</h3>
-                        <p class="text-stone-600 text-sm mt-2 flex-grow">"Muito felizes por fazer parte desta família Amare."</p>
-                        <div class="mt-4 pt-4 border-t border-stone-100 text-xs text-stone-400">Casados há 5 anos</div>
-                    </div>
-                </div>
+                <p class="text-stone-500">Carregando casais diretamente da planilha...</p>
             </div>
         </section>
 
@@ -118,17 +86,8 @@
                 <p class="text-stone-500 text-sm">O que o nosso grupo tem realizado e planeja realizar na comunidade.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 space-y-3">
-                    <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md">Realizado</span>
-                    <h3 class="font-bold text-xl text-stone-900">Arrecadação de Alimentos</h3>
-                    <p class="text-stone-600 text-sm">Campanha solidária de inverno realizada no mês passado com entrega de cestas básicas para famílias carentes da região.</p>
-                </div>
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 space-y-3">
-                    <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">Em Andamento</span>
-                    <h3 class="font-bold text-xl text-stone-900">Reforma da Sala de Catequese</h3>
-                    <p class="text-stone-600 text-sm">Mutirão dos casais para pintura, melhoria da iluminação e organização dos materiais didáticos da paróquia.</p>
-                </div>
+            <div id="grid-acoes" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <p class="text-stone-500">Carregando ações diretamente da planilha...</p>
             </div>
         </section>
 
@@ -139,23 +98,8 @@
                 <p class="text-stone-500 text-sm">Fique por dentro das datas dos nossos encontros e reuniões.</p>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 divide-y divide-stone-100">
-                <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <span class="text-amber-700 font-semibold text-sm">25 de Setembro, 2026</span>
-                        <h3 class="font-bold text-lg text-stone-900">Encontro Mensal de Casais</h3>
-                        <p class="text-stone-500 text-sm">Tema: O diálogo no matrimônio • Local: Salão Paroquial</p>
-                    </div>
-                    <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-medium">Presença Confirmada</span>
-                </div>
-                <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <span class="text-amber-700 font-semibold text-sm">12 de Outubro, 2026</span>
-                        <h3 class="font-bold text-lg text-stone-900">Retiro Espiritual Amare</h3>
-                        <p class="text-stone-500 text-sm">Momento de oração e partilha • Local: Casa de Retiros</p>
-                    </div>
-                    <span class="bg-stone-100 text-stone-600 text-xs px-3 py-1 rounded-full font-medium">Em Breve</span>
-                </div>
+            <div id="lista-agenda" class="bg-white rounded-2xl shadow-sm border border-stone-200 divide-y divide-stone-100">
+                <p class="p-6 text-stone-500">Carregando agenda diretamente da planilha...</p>
             </div>
         </section>
 
@@ -167,10 +111,12 @@
         <p class="mt-1 text-stone-500">Unidos pela fé e pelo amor.</p>
     </footer>
 
-    <!-- Lógica de Navegação das Abas -->
+    <!-- Lógica de Leitura Direta do Google Sheets (GViz API) -->
     <script>
+        const SPREADSHIELD_ID = '1bc_VUUks33mKZ67e3mA3O4SLWW_KN9AzTiUkY5ZaKZc';
+        let todosOsCasais = [];
+
         function mudarAba(abaId) {
-            // Esconde todas as seções
             ['home', 'casais', 'acoes', 'agenda'].forEach(aba => {
                 document.getElementById(`aba-${aba}`).classList.add('hidden');
                 const btn = document.getElementById(`btn-${aba}`);
@@ -179,7 +125,6 @@
                 }
             });
 
-            // Mostra a aba escolhida
             document.getElementById(`aba-${abaId}`).classList.remove('hidden');
             const ativoBtn = document.getElementById(`btn-${abaId}`);
             if (ativoBtn) {
@@ -188,9 +133,136 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Função genérica para buscar dados de uma aba específica da planilha usando CSV público
+        async function buscarAbaPlanilha(nomeAba) {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${SPREADSHIELD_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(nomeAba)}`;
+                const resposta = await fetch(url);
+                const textoCsv = await resposta.text();
+                return converterCsvParaObjeto(textoCsv);
+            } catch (erro) {
+                console.error(`Erro ao carregar a aba ${nomeAba}:`, erro);
+                return [];
+            }
+        }
+
+        // Conversor simples de CSV gerado pelo Google para lista de objetos JSON
+        function converterCsvParaObjeto(csv) {
+            const linhas = csv.split('\n');
+            if (linhas.length < 2) return [];
+
+            // Função para lidar com colunas que contêm vírgulas entre aspas
+            const parseLinha = (linha) => {
+                const result = [];
+                let cur = '';
+                let inQuotes = false;
+                for (let i = 0; i < linha.length; i++) {
+                    const char = linha[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(cur.trim().replace(/^"|"$/g, ''));
+                        cur = '';
+                    } else {
+                        cur += char;
+                    }
+                }
+                result.push(cur.trim().replace(/^"|"$/g, ''));
+                return result;
+            };
+
+            const cabecalho = parseLinha(linhas[0]).map(h => h.toLowerCase());
+            const dados = [];
+
+            for (let i = 1; i < linhas.length; i++) {
+                if (!linhas[i].trim()) continue;
+                const valores = parseLinha(linhas[i]);
+                const objeto = {};
+                cabecalho.forEach((col, index) => {
+                    objeto[col] = valores[index] || '';
+                });
+                dados.push(objeto);
+            }
+            return dados;
+        }
+
+        // Inicialização ao carregar a página
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Carregar Casais (espera-se que a aba se chame "casais")
+            todosOsCasais = await buscarAbaPlanilha('casais');
+            renderizarCasais(todosOsCasais);
+
+            // Carregar Ações (espera-se que a aba se chame "acoes")
+            const acoes = await buscarAbaPlanilha('acoes');
+            renderizarAcoes(acoes);
+
+            // Carregar Agenda (espera-se que a aba se chame "agenda")
+            const agenda = await buscarAbaPlanilha('agenda');
+            renderizarAgenda(agenda);
+        });
+
+        function renderizarCasais(lista) {
+            const grid = document.getElementById('grid-casais');
+            if (!lista || lista.length === 0) {
+                grid.innerHTML = '<p class="text-stone-500">Nenhum casal encontrado na aba "casais".</p>';
+                return;
+            }
+
+            grid.innerHTML = lista.map(casal => `
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
+                    <img src="${casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80'}" alt="${casal.nome || 'Casal'}" class="h-48 w-full object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md w-max mb-2">${casal.categoria || 'Amareano'}</span>
+                        <h3 class="font-bold text-lg text-stone-900">${casal.nome || ''}</h3>
+                        <p class="text-stone-600 text-sm mt-2 flex-grow">"${casal.bio || ''}"</p>
+                        <div class="mt-4 pt-4 border-t border-stone-100 text-xs text-stone-400">${casal.detalhe || ''}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function filtrarCasais(categoria) {
-            // Função pronta para futura integração com a planilha do Google Sheets
-            console.log("Filtrar por:", categoria);
+            if (categoria === 'todos') {
+                renderizarCasais(todosOsCasais);
+            } else {
+                const filtrados = todosOsCasais.filter(c => c.categoria && c.categoria.toLowerCase() === categoria.toLowerCase());
+                renderizarCasais(filtrados);
+            }
+        }
+
+        function renderizarAcoes(acoes) {
+            const grid = document.getElementById('grid-acoes');
+            if (!acoes || acoes.length === 0) {
+                grid.innerHTML = '<p class="text-stone-500">Nenhuma ação encontrada na aba "acoes".</p>';
+                return;
+            }
+
+            grid.innerHTML = acoes.map(acao => `
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 space-y-3">
+                    <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">${acao.status || ''}</span>
+                    <h3 class="font-bold text-xl text-stone-900">${acao.titulo || ''}</h3>
+                    <p class="text-stone-600 text-sm">${acao.descricao || ''}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderizarAgenda(agenda) {
+            const lista = document.getElementById('lista-agenda');
+            if (!agenda || agenda.length === 0) {
+                lista.innerHTML = '<p class="p-6 text-stone-500">Nenhum evento encontrado na aba "agenda".</p>';
+                return;
+            }
+
+            lista.innerHTML = agenda.map(item => `
+                <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <span class="text-amber-700 font-semibold text-sm">${item.data || ''}</span>
+                        <h3 class="font-bold text-lg text-stone-900">${item.titulo || ''}</h3>
+                        <p class="text-stone-500 text-sm">${item.descricao || ''}</p>
+                    </div>
+                    <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-medium">${item.tag || ''}</span>
+                </div>
+            `).join('');
         }
     </script>
 </body>
