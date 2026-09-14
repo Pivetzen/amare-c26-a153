@@ -212,7 +212,7 @@
             }));
             renderizarCasais(todosOsCasais);
 
-            // Carregar Ações e Eventos (Corrigido para o nome exato da aba na planilha)
+            // Carregar Ações e Eventos
             const acoesBrutas = await buscarAbaPlanilha('Ações e Eventos');
             const acoes = acoesBrutas.map(a => ({
                 id: pegarValor(a, ['id', 'codigo']),
@@ -283,19 +283,29 @@
                 return;
             }
 
-            grid.innerHTML = acoes.map(acao => `
-                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
-                    <img src="${acao.foto || 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80'}" alt="${acao.titulo || 'Ação'}" class="h-48 w-full object-cover">
-                    <div class="p-6 flex flex-col flex-grow">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">${acao.status || 'Evento'}</span>
-                            <span class="text-xs text-stone-400 font-medium">${acao.data || ''}</span>
+            grid.innerHTML = acoes.map(acao => {
+                const statusTexto = (acao.status || 'Em andamento').trim().toUpperCase();
+                
+                // Define as cores: Verde se for REALIZADA, Amarelo se for qualquer outra coisa (Em andamento / Planejada)
+                let estiloBadge = "bg-amber-100 text-amber-800";
+                if (statusTexto.includes('REALIZADA')) {
+                    estiloBadge = "bg-emerald-100 text-emerald-800";
+                }
+
+                return `
+                    <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
+                        <img src="${acao.foto || 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80'}" alt="${acao.titulo || 'Ação'}" class="h-48 w-full object-cover">
+                        <div class="p-6 flex flex-col flex-grow">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-md ${estiloBadge}">${statusTexto}</span>
+                                <span class="text-xs text-stone-400 font-medium">${acao.data || ''}</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-stone-900">${acao.titulo || ''}</h3>
+                            <p class="text-stone-600 text-sm mt-2 flex-grow">${acao.descricao || ''}</p>
                         </div>
-                        <h3 class="font-bold text-lg text-stone-900">${acao.titulo || ''}</h3>
-                        <p class="text-stone-600 text-sm mt-2 flex-grow">${acao.descricao || ''}</p>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function renderizarAgenda(agenda) {
