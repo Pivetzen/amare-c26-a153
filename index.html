@@ -37,7 +37,7 @@
                 <div class="relative z-10 max-w-2xl mx-auto">
                     <h1 class="text-3xl sm:text-5xl font-bold mb-4">Bem-vindos ao Grupo Amare</h1>
                     <p class="text-amber-100 text-base sm:text-lg mb-6">Caminhando juntos na fé, na partilha e no amor fraterno. Conectados pelo propósito de servir.</p>
-                    <button onclick="mudarAba('casais')" class="bg-white text-amber-800 font-semibold px-6 py-3 rounded-xl shadow hover:bg-amber-50 transition">Conhecer os Casais</button>
+                    <button onclick="mudarAba('casais')" class="bg-white text-amber-800 font-semibold px-6 py-3 rounded-xl shadow hover:bg-amber-50 transition cursor-pointer">Conhecer os Casais</button>
                 </div>
             </div>
 
@@ -68,10 +68,10 @@
             </div>
 
             <div class="flex flex-wrap gap-2">
-                <button onclick="filtrarCasais('todos', this)" id="filtro-todos" class="px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition shadow">Todos</button>
-                <button onclick="filtrarCasais('Coordenador', this)" id="filtro-coordenador" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Coordenação</button>
-                <button onclick="filtrarCasais('Animador', this)" id="filtro-animador" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Animadores</button>
-                <button onclick="filtrarCasais('Amareano', this)" id="filtro-amareano" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition">Amareanos</button>
+                <button onclick="filtrarCasais('todos', this)" id="filtro-todos" class="px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition shadow cursor-pointer">Todos</button>
+                <button onclick="filtrarCasais('Coordenador', this)" id="filtro-coordenador" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition cursor-pointer">Coordenação</button>
+                <button onclick="filtrarCasais('Animador', this)" id="filtro-animador" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition cursor-pointer">Animadores</button>
+                <button onclick="filtrarCasais('Amareano', this)" id="filtro-amareano" class="px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition cursor-pointer">Amareanos</button>
             </div>
 
             <div id="grid-casais" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -84,7 +84,7 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h2 class="text-2xl font-bold text-stone-900">Ações & Projetos</h2>
-                    <p class="text-stone-500 text-sm">O que o nosso grupo tem realizado e planeja realizar na comunidade.</p>
+                    <p class="text-stone-500 text-sm">Clique em qualquer ação para ver todos os detalhes e fotos do que foi realizado.</p>
                 </div>
                 <div class="w-full md:w-72">
                     <input type="text" id="busca-acoes" oninput="filtrarAcoes()" placeholder="Buscar ação ou projeto..." class="w-full bg-white border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-700 focus:border-transparent shadow-sm">
@@ -114,69 +114,102 @@
     <div id="modal-casal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl transform transition-all my-8">
             <div class="relative h-64">
-                <img id="modal-foto" src="" alt="Casal" class="w-full h-full object-cover">
-                <button onclick="fecharModal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer">
+                <img id="modal-casal-foto" src="" alt="Casal" class="w-full h-full object-cover">
+                <button onclick="fecharModalCasal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer">
                     ✕
                 </button>
-                <div class="absolute bottom-4 left-4 bg-amber-700 text-white text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider" id="modal-categoria"></div>
+                <div class="absolute bottom-4 left-4 bg-amber-700 text-white text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider" id="modal-casal-categoria"></div>
             </div>
             
             <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
                 <div>
-                    <h3 id="modal-nome" class="text-2xl font-bold text-stone-900"></h3>
-                    <p id="modal-bio" class="text-stone-600 text-sm italic mt-1"></p>
+                    <h3 id="modal-casal-nome" class="text-2xl font-bold text-stone-900"></h3>
+                    <p id="modal-casal-bio" class="text-stone-600 text-sm italic mt-1"></p>
                 </div>
                 
-                <!-- Informações Principais (Idades e Casamento) -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-stone-50 p-3.5 rounded-2xl border border-stone-100 text-center">
                         <span class="text-xs text-stone-400 block font-medium">🤵 Idade Ele</span>
-                        <span id="modal-idade-ele" class="text-stone-800 font-bold text-base">-</span>
+                        <span id="modal-casal-idade-ele" class="text-stone-800 font-bold text-base">-</span>
                     </div>
                     <div class="bg-stone-50 p-3.5 rounded-2xl border border-stone-100 text-center">
                         <span class="text-xs text-stone-400 block font-medium">👰 Idade Ela</span>
-                        <span id="modal-idade-ela" class="text-stone-800 font-bold text-base">-</span>
+                        <span id="modal-casal-idade-ela" class="text-stone-800 font-bold text-base">-</span>
                     </div>
                     <div class="bg-stone-50 p-3.5 rounded-2xl border border-stone-100 text-center">
                         <span class="text-xs text-stone-400 block font-medium">💍 Tempo de Casados</span>
-                        <span id="modal-tempo" class="text-stone-800 font-bold text-sm">-</span>
+                        <span id="modal-casal-tempo" class="text-stone-800 font-bold text-sm">-</span>
                     </div>
                 </div>
 
-                <!-- Seção de Filhos e Pets com Fotos Opcionais -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-stone-100">
-                    <!-- Filhos -->
                     <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 space-y-3">
                         <div class="flex items-center space-x-2">
                             <span class="text-xl">👶</span>
                             <div>
                                 <span class="text-xs text-amber-800 font-semibold uppercase tracking-wider block">Filhos</span>
-                                <span id="modal-filhos-texto" class="text-stone-800 font-medium text-sm">Nenhum informado</span>
+                                <span id="modal-casal-filhos-texto" class="text-stone-800 font-medium text-sm">Nenhum informado</span>
                             </div>
                         </div>
                         <div id="container-foto-filhos" class="hidden rounded-xl overflow-hidden h-36 border border-amber-200/60 shadow-inner">
-                            <img id="modal-foto-filhos" src="" alt="Filhos" class="w-full h-full object-cover">
+                            <img id="modal-casal-foto-filhos" src="" alt="Filhos" class="w-full h-full object-cover">
                         </div>
                     </div>
 
-                    <!-- Pets -->
                     <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 space-y-3">
                         <div class="flex items-center space-x-2">
                             <span class="text-xl">🐾</span>
                             <div>
                                 <span class="text-xs text-amber-800 font-semibold uppercase tracking-wider block">Pets</span>
-                                <span id="modal-pets-texto" class="text-stone-800 font-medium text-sm">Nenhum informado</span>
+                                <span id="modal-casal-pets-texto" class="text-stone-800 font-medium text-sm">Nenhum informado</span>
                             </div>
                         </div>
                         <div id="container-foto-pets" class="hidden rounded-xl overflow-hidden h-36 border border-amber-200/60 shadow-inner">
-                            <img id="modal-foto-pets" src="" alt="Pets" class="w-full h-full object-cover">
+                            <img id="modal-casal-foto-pets" src="" alt="Pets" class="w-full h-full object-cover">
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="bg-stone-50 px-6 py-4 flex justify-end border-t border-stone-100">
-                <button onclick="fecharModal()" class="bg-stone-800 hover:bg-stone-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition cursor-pointer">Fechar</button>
+                <button onclick="fecharModalCasal()" class="bg-stone-800 hover:bg-stone-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition cursor-pointer">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL (POPUP) DE DETALHES DA AÇÃO -->
+    <div id="modal-acao" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl transform transition-all my-8">
+            <div class="relative h-64">
+                <img id="modal-acao-foto" src="" alt="Ação" class="w-full h-full object-cover">
+                <button onclick="fecharModalAcao()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer">
+                    ✕
+                </button>
+                <div class="absolute bottom-4 left-4 flex gap-2">
+                    <span id="modal-acao-status" class="text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider"></span>
+                    <span id="modal-acao-data" class="bg-black/60 text-white text-xs font-medium px-3 py-1 rounded-md"></span>
+                </div>
+            </div>
+            
+            <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                <div>
+                    <h3 id="modal-acao-titulo" class="text-2xl font-bold text-stone-900"></h3>
+                    <p id="modal-acao-descricao" class="text-stone-600 text-sm mt-3 leading-relaxed whitespace-pre-line"></p>
+                </div>
+
+                <!-- Galeria de Fotos da Ação -->
+                <div id="modal-galeria-container" class="hidden space-y-3 pt-4 border-t border-stone-100">
+                    <h4 class="font-semibold text-stone-900 text-sm flex items-center gap-2">
+                        <span>📸</span> Galeria de Fotos da Ação
+                    </h4>
+                    <div id="modal-galeria-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <!-- Inserido via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-stone-50 px-6 py-4 flex justify-end border-t border-stone-100">
+                <button onclick="fecharModalAcao()" class="bg-stone-800 hover:bg-stone-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition cursor-pointer">Fechar</button>
             </div>
         </div>
     </div>
@@ -281,7 +314,6 @@
             if (!dataStr) return 'Não informado';
             
             let dataCasamento;
-            // Tenta formato DD/MM/AAAA ou YYYY-MM-DD
             if (dataStr.includes('/')) {
                 const partes = dataStr.split('/');
                 if (partes.length === 3) {
@@ -291,7 +323,7 @@
                 dataCasamento = new Date(dataStr);
             }
 
-            if (!dataCasamento || isNaN(dataCasamento.getTime())) return dataStr; // Se for texto livre (ex: "10 anos")
+            if (!dataCasamento || isNaN(dataCasamento.getTime())) return dataStr;
 
             const hoje = new Date();
             let anos = hoje.getFullYear() - dataCasamento.getFullYear();
@@ -334,15 +366,28 @@
 
             // Carregar Ações e Eventos
             const acoesBrutas = await buscarAbaPlanilha('Ações e Eventos');
-            todasAsAcoes = acoesBrutas.map(a => ({
-                id: pegarValor(a, ['id', 'codigo']),
-                titulo: pegarValor(a, ['titulo', 'nome', 'acao', 'evento']),
-                data: pegarValor(a, ['data', 'dia', 'quando']),
-                descricao: pegarValor(a, ['descricao', 'detalhe', 'texto']),
-                foto: pegarValor(a, ['foto', 'imagem', 'link', 'url']),
-                status: pegarValor(a, ['status', 'estado', 'situacao']),
-                destaque: pegarValor(a, ['destaque', 'importante'])
-            }));
+            todasAsAcoes = acoesBrutas.map((a, index) => {
+                // Coleta foto principal e fotos extras (ex: foto 2, foto 3, galeria)
+                let fotosExtras = [];
+                for (let prop in a) {
+                    if ((prop.includes('foto') || prop.includes('imagem') || prop.includes('galeria')) && 
+                        prop !== 'foto' && prop !== 'fotodaacao' && prop !== 'imagemdaacao' && a[prop].trim() !== '') {
+                        fotosExtras.push(a[prop]);
+                    }
+                }
+
+                return {
+                    id: index,
+                    idAcao: pegarValor(a, ['id', 'codigo']),
+                    titulo: pegarValor(a, ['titulo', 'nome', 'acao', 'evento']),
+                    data: pegarValor(a, ['data', 'dia', 'quando']),
+                    descricao: pegarValor(a, ['descricao', 'detalhe', 'texto']),
+                    foto: pegarValor(a, ['foto', 'imagem', 'link', 'url']),
+                    status: pegarValor(a, ['status', 'estado', 'situacao']),
+                    destaque: pegarValor(a, ['destaque', 'importante']),
+                    fotosExtras: fotosExtras
+                };
+            });
             renderizarAcoes(todasAsAcoes);
 
             // Carregar Agenda
@@ -364,7 +409,7 @@
             }
 
             grid.innerHTML = lista.map(casal => `
-                <div onclick="abrirModal(${casal.id})" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md hover:border-amber-300 transition group">
+                <div onclick="abrirModalCasal(${casal.id})" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md hover:border-amber-300 transition group">
                     <div class="overflow-hidden h-48">
                         <img src="${casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80'}" alt="${casal.nome || 'Casal'}" class="h-full w-full object-cover group-hover:scale-105 transition duration-300">
                     </div>
@@ -381,37 +426,32 @@
             `).join('');
         }
 
-        function abrirModal(idCasal) {
+        function abrirModalCasal(idCasal) {
             const casal = todosOsCasais.find(c => c.id === idCasal);
             if (!casal) return;
 
-            document.getElementById('modal-foto').src = casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80';
-            document.getElementById('modal-categoria').innerText = casal.categoria || 'Amareano';
-            document.getElementById('modal-nome').innerText = casal.nome || '';
-            document.getElementById('modal-bio').innerText = casal.bio ? `"${casal.bio}"` : '';
+            document.getElementById('modal-casal-foto').src = casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80';
+            document.getElementById('modal-casal-categoria').innerText = casal.categoria || 'Amareano';
+            document.getElementById('modal-casal-nome').innerText = casal.nome || '';
+            document.getElementById('modal-casal-bio').innerText = casal.bio ? `"${casal.bio}"` : '';
             
-            // Idades individuais
-            document.getElementById('modal-idade-ele').innerText = casal.idadeEle ? `${casal.idadeEle} anos` : 'Não informada';
-            document.getElementById('modal-idade-ela').innerText = casal.idadeEla ? `${casal.idadeEla} anos` : 'Não informada';
-            
-            // Tempo de casados calculado
-            document.getElementById('modal-tempo').innerText = calcularTempoCasamento(casal.dataCasamento);
+            document.getElementById('modal-casal-idade-ele').innerText = casal.idadeEle ? `${casal.idadeEle} anos` : 'Não informada';
+            document.getElementById('modal-casal-idade-ela').innerText = casal.idadeEla ? `${casal.idadeEla} anos` : 'Não informada';
+            document.getElementById('modal-casal-tempo').innerText = calcularTempoCasamento(casal.dataCasamento);
 
-            // Filhos e Foto de Filhos
-            document.getElementById('modal-filhos-texto').innerText = casal.filhos || 'Nenhum informado';
+            document.getElementById('modal-casal-filhos-texto').innerText = casal.filhos || 'Nenhum informado';
             const containerFotoFilhos = document.getElementById('container-foto-filhos');
             if (casal.fotoFilhos && casal.fotoFilhos.trim() !== '') {
-                document.getElementById('modal-foto-filhos').src = casal.fotoFilhos;
+                document.getElementById('modal-casal-foto-filhos').src = casal.fotoFilhos;
                 containerFotoFilhos.classList.remove('hidden');
             } else {
                 containerFotoFilhos.classList.add('hidden');
             }
 
-            // Pets e Foto de Pets
-            document.getElementById('modal-pets-texto').innerText = casal.pets || 'Nenhum informado';
+            document.getElementById('modal-casal-pets-texto').innerText = casal.pets || 'Nenhum informado';
             const containerFotoPets = document.getElementById('container-foto-pets');
             if (casal.fotoPets && casal.fotoPets.trim() !== '') {
-                document.getElementById('modal-foto-pets').src = casal.fotoPets;
+                document.getElementById('modal-casal-foto-pets').src = casal.fotoPets;
                 containerFotoPets.classList.remove('hidden');
             } else {
                 containerFotoPets.classList.add('hidden');
@@ -421,36 +461,9 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function fecharModal() {
+        function fecharModalCasal() {
             document.getElementById('modal-casal').classList.add('hidden');
             document.body.style.overflow = 'auto';
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('modal-casal');
-            if (event.target === modal) {
-                fecharModal();
-            }
-        }
-
-        function filtrarCasais(categoria, elementoBotao) {
-            ['filtro-todos', 'filtro-coordenador', 'filtro-animador', 'filtro-amareano'].forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) {
-                    btn.className = "px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition";
-                }
-            });
-
-            if (elementoBotao) {
-                elementoBotao.className = "px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition shadow";
-            }
-
-            if (categoria === 'todos') {
-                renderizarCasais(todosOsCasais);
-            } else {
-                const filtrados = todosOsCasais.filter(c => c.categoria && c.categoria.toLowerCase().includes(categoria.toLowerCase()));
-                renderizarCasais(filtrados);
-            }
         }
 
         function renderizarAcoes(acoes) {
@@ -468,19 +481,76 @@
                 }
 
                 return `
-                    <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col">
-                        <img src="${acao.foto || 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80'}" alt="${acao.titulo || 'Ação'}" class="h-48 w-full object-cover">
+                    <div onclick="abrirModalAcao(${acao.id})" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md hover:border-amber-300 transition group">
+                        <div class="overflow-hidden h-48">
+                            <img src="${acao.foto || 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80'}" alt="${acao.titulo || 'Ação'}" class="h-full w-full object-cover group-hover:scale-105 transition duration-300">
+                        </div>
                         <div class="p-6 flex flex-col flex-grow">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-md ${estiloBadge}">${statusTexto}</span>
                                 <span class="text-xs text-stone-400 font-medium">${acao.data || ''}</span>
                             </div>
-                            <h3 class="font-bold text-lg text-stone-900">${acao.titulo || ''}</h3>
-                            <p class="text-stone-600 text-sm mt-2 flex-grow">${acao.descricao || ''}</p>
+                            <h3 class="font-bold text-lg text-stone-900 group-hover:text-amber-700 transition">${acao.titulo || ''}</h3>
+                            <p class="text-stone-600 text-sm mt-2 flex-grow line-clamp-2">${acao.descricao || ''}</p>
+                            <div class="mt-4 pt-4 border-t border-stone-100 flex justify-end items-center text-xs text-amber-600 font-medium">
+                                <span class="group-hover:underline">Ver detalhes e fotos →</span>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
+        }
+
+        function abrirModalAcao(idAcao) {
+            const acao = todasAsAcoes.find(a => a.id === idAcao);
+            if (!acao) return;
+
+            document.getElementById('modal-acao-foto').src = acao.foto || 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80';
+            
+            const statusBadge = document.getElementById('modal-acao-status');
+            const statusTexto = (acao.status || 'Em andamento').trim().toUpperCase();
+            statusBadge.innerText = statusTexto;
+            statusBadge.className = statusTexto.includes('REALIZADA') 
+                ? "text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider bg-emerald-100 text-emerald-800"
+                : "text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider bg-amber-100 text-amber-800";
+
+            document.getElementById('modal-acao-data').innerText = acao.data ? `📅 ${acao.data}` : '';
+            document.getElementById('modal-acao-titulo').innerText = acao.titulo || '';
+            document.getElementById('modal-acao-descricao').innerText = acao.descricao || 'Nenhuma descrição detalhada informada.';
+
+            // Renderizar Galeria de Fotos Extras
+            const galeriaContainer = document.getElementById('modal-galeria-container');
+            const galeriaGrid = document.getElementById('modal-galeria-grid');
+            
+            if (acao.fotosExtras && acao.fotosExtras.length > 0) {
+                galeriaGrid.innerHTML = acao.fotosExtras.map(urlFoto => `
+                    <div class="rounded-xl overflow-hidden h-28 border border-stone-200 shadow-sm hover:opacity-95 transition">
+                        <img src="${urlFoto}" alt="Foto da Ação" class="w-full h-full object-cover">
+                    </div>
+                `).join('');
+                galeriaContainer.classList.remove('hidden');
+            } else {
+                galeriaContainer.classList.add('hidden');
+            }
+
+            document.getElementById('modal-acao').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fecharModalAcao() {
+            document.getElementById('modal-acao').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            const modalCasal = document.getElementById('modal-casal');
+            const modalAcao = document.getElementById('modal-acao');
+            if (event.target === modalCasal) {
+                fecharModalCasal();
+            }
+            if (event.target === modalAcao) {
+                fecharModalAcao();
+            }
         }
 
         function filtrarAcoes() {
