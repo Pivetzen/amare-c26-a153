@@ -113,8 +113,8 @@
     <!-- MODAL (POPUP) DE DETALHES DO CASAL -->
     <div id="modal-casal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl transform transition-all my-8">
-            <div class="relative h-64 bg-stone-100 flex items-center justify-center">
-                <img id="modal-casal-foto" src="" alt="Casal" class="w-full h-full object-contain">
+            <div class="relative aspect-square sm:aspect-[16/10] bg-stone-900 flex items-center justify-center">
+                <img id="modal-casal-foto" src="" alt="Casal" class="w-full h-full object-cover">
                 <button onclick="fecharModalCasal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer z-10">
                     ✕
                 </button>
@@ -151,8 +151,8 @@
                         <div id="modal-casal-filhos-lista" class="text-stone-800 font-medium text-sm space-y-1">
                             Nenhum informado
                         </div>
-                        <div id="container-foto-filhos" class="hidden rounded-xl overflow-hidden h-36 bg-stone-100 border border-amber-200/60 shadow-inner flex items-center justify-center">
-                            <img id="modal-casal-foto-filhos" src="" alt="Filhos" class="w-full h-full object-contain">
+                        <div id="container-foto-filhos" class="hidden rounded-xl overflow-hidden aspect-square bg-stone-100 border border-amber-200/60 shadow-inner flex items-center justify-center">
+                            <img id="modal-casal-foto-filhos" src="" alt="Filhos" class="w-full h-full object-cover">
                         </div>
                     </div>
 
@@ -164,8 +164,8 @@
                         <div id="modal-casal-pets-lista" class="text-stone-800 font-medium text-sm space-y-1">
                             Nenhum informado
                         </div>
-                        <div id="container-foto-pets" class="hidden rounded-xl overflow-hidden h-36 bg-stone-100 border border-amber-200/60 shadow-inner flex items-center justify-center">
-                            <img id="modal-casal-foto-pets" src="" alt="Pets" class="w-full h-full object-contain">
+                        <div id="container-foto-pets" class="hidden rounded-xl overflow-hidden aspect-square bg-stone-100 border border-amber-200/60 shadow-inner flex items-center justify-center">
+                            <img id="modal-casal-foto-pets" src="" alt="Pets" class="w-full h-full object-cover">
                         </div>
                     </div>
                 </div>
@@ -180,8 +180,8 @@
     <!-- MODAL (POPUP) DE DETALHES DA AÇÃO -->
     <div id="modal-acao" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl transform transition-all my-8">
-            <div class="relative h-64 bg-stone-100 flex items-center justify-center">
-                <img id="modal-acao-foto" src="" alt="Ação" class="w-full h-full object-contain">
+            <div class="relative aspect-[16/10] bg-stone-900 flex items-center justify-center">
+                <img id="modal-acao-foto" src="" alt="Ação" class="w-full h-full object-cover">
                 <button onclick="fecharModalAcao()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer z-10">
                     ✕
                 </button>
@@ -360,9 +360,9 @@
             const match = textoItem.match(/\d+/);
             if (match) {
                 const idade = parseInt(match[0], 10);
-                if (idade <= 5) return '👶';       // Até 5 anos: Bebê
-                if (idade <= 17) return '🧒';      // 6 a 17 anos: Criança/Adolescente
-                return '🧑';                       // 18 ou mais: Adulto
+                if (idade <= 5) return '👶';
+                if (idade <= 17) return '🧒';
+                return '🧑';
             }
             return '👶';
         }
@@ -385,7 +385,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
-            // Carregar Casais
             const dadosCasaisBrutos = await buscarAbaPlanilha('casais');
             todosOsCasais = dadosCasaisBrutos.map((c, index) => ({
                 id: index,
@@ -403,7 +402,6 @@
             }));
             renderizarCasais(todosOsCasais);
 
-            // Carregar Ações e Eventos
             const acoesBrutas = await buscarAbaPlanilha('Ações e Eventos');
             todasAsAcoes = acoesBrutas.map((a, index) => {
                 let fotosExtras = [];
@@ -428,7 +426,6 @@
             });
             renderizarAcoes(todasAsAcoes);
 
-            // Carregar Agenda
             const agendaBruta = await buscarAbaPlanilha('agenda');
             const agenda = agendaBruta.map(ag => {
                 let dataStr = pegarValor(ag, ['data', 'dia', 'quando']);
@@ -465,8 +462,8 @@
 
             grid.innerHTML = lista.map(casal => `
                 <div onclick="abrirModalCasal(${casal.id})" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md hover:border-amber-300 transition group">
-                    <div class="overflow-hidden h-48 bg-stone-100 flex items-center justify-center">
-                        <img src="${casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80'}" alt="${casal.nome || 'Casal'}" class="h-full w-full object-contain group-hover:scale-105 transition duration-300">
+                    <div class="overflow-hidden aspect-square bg-stone-100 flex items-center justify-center">
+                        <img src="${casal.foto || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80'}" alt="${casal.nome || 'Casal'}" class="h-full w-full object-cover group-hover:scale-105 transition duration-300">
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <span class="text-xs font-semibold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md w-max mb-2">${casal.categoria || 'Amareano'}</span>
@@ -551,8 +548,8 @@
 
                 return `
                     <div onclick="abrirModalAcao(${acao.id})" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col cursor-pointer hover:shadow-md hover:border-amber-300 transition group">
-                        <div class="overflow-hidden h-48 bg-stone-100 flex items-center justify-center">
-                            <img src="${acao.foto || 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80'}" alt="${acao.titulo || 'Ação'}" class="h-full w-full object-contain group-hover:scale-105 transition duration-300">
+                        <div class="overflow-hidden aspect-[16/10] bg-stone-100 flex items-center justify-center">
+                            <img src="${acao.foto || 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80'}" alt="${acao.titulo || 'Ação'}" class="h-full w-full object-cover group-hover:scale-105 transition duration-300">
                         </div>
                         <div class="p-6 flex flex-col flex-grow">
                             <div class="flex justify-between items-center mb-2">
@@ -592,8 +589,8 @@
             
             if (acao.fotosExtras && acao.fotosExtras.length > 0) {
                 galeriaGrid.innerHTML = acao.fotosExtras.map(urlFoto => `
-                    <div class="rounded-xl overflow-hidden h-28 bg-stone-100 border border-stone-200 shadow-sm flex items-center justify-center hover:opacity-95 transition">
-                        <img src="${urlFoto}" alt="Foto da Ação" class="w-full h-full object-contain">
+                    <div class="rounded-xl overflow-hidden aspect-square bg-stone-100 border border-stone-200 shadow-sm flex items-center justify-center hover:opacity-95 transition">
+                        <img src="${urlFoto}" alt="Foto da Ação" class="w-full h-full object-cover">
                     </div>
                 `).join('');
                 galeriaContainer.classList.remove('hidden');
