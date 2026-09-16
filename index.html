@@ -146,10 +146,10 @@
                     <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 space-y-3">
                         <div class="flex items-center space-x-2">
                             <span class="text-xl">👶</span>
-                            <div>
-                                <span class="text-xs text-amber-800 font-semibold uppercase tracking-wider block">Filhos</span>
-                                <span id="modal-casal-filhos-texto" class="text-stone-800 font-medium text-sm">Nenhum informado</span>
-                            </div>
+                            <span class="text-xs text-amber-800 font-semibold uppercase tracking-wider">Filhos</span>
+                        </div>
+                        <div id="modal-casal-filhos-lista" class="text-stone-800 font-medium text-sm space-y-1">
+                            Nenhum informado
                         </div>
                         <div id="container-foto-filhos" class="hidden rounded-xl overflow-hidden h-36 border border-amber-200/60 shadow-inner">
                             <img id="modal-casal-foto-filhos" src="" alt="Filhos" class="w-full h-full object-cover">
@@ -158,11 +158,11 @@
 
                     <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 space-y-3">
                         <div class="flex items-center space-x-2">
-                            <span id="modal-casal-pet-emoji" class="text-xl">🐾</span>
-                            <div>
-                                <span class="text-xs text-amber-800 font-semibold uppercase tracking-wider block">Pets</span>
-                                <span id="modal-casal-pets-texto" class="text-stone-800 font-medium text-sm">Nenhum informado</span>
-                            </div>
+                            <span class="text-xl">🐾</span>
+                            <span class="text-xs text-amber-800 font-semibold uppercase tracking-wider">Pets</span>
+                        </div>
+                        <div id="modal-casal-pets-lista" class="text-stone-800 font-medium text-sm space-y-1">
+                            Nenhum informado
                         </div>
                         <div id="container-foto-pets" class="hidden rounded-xl overflow-hidden h-36 border border-amber-200/60 shadow-inner">
                             <img id="modal-casal-foto-pets" src="" alt="Pets" class="w-full h-full object-cover">
@@ -345,14 +345,31 @@
             return resultado || 'Menos de um mês';
         }
 
-        function obterEmojiPet(textoPet) {
-            if (!textoPet) return '🐾';
-            const txt = textoPet.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        function obterEmojiPet(textoItem) {
+            if (!textoItem) return '🐾';
+            const txt = textoItem.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             if (txt.includes('gato') || txt.includes('gata') || txt.includes('felino')) return '🐱';
-            if (txt.includes('cachorro') || txt.includes('cao') || txt.includes('cahorro') || txt.includes('dog') || txt.includes('pet')) return '🐶';
+            if (txt.includes('cachorro') || txt.includes('cao') || txt.includes('cahorro') || txt.includes('dog')) return '🐶';
             if (txt.includes('papagaio') || txt.includes('passaro') || txt.includes('ave') || txt.includes('loro')) return '🦜';
             if (txt.includes('hamster') || txt.includes('rato') || txt.includes('coelho')) return '🐹';
             return '🐾';
+        }
+
+        function renderizarListaItens(textoBruto, tipo = 'pet') {
+            if (!textoBruto || textoBruto.trim() === '') return '<span class="text-stone-500">Nenhum informado</span>';
+            
+            // Divide por vírgula ou quebra de linha
+            const itens = textoBruto.split(/,|\n/).map(i => i.trim()).filter(i => i.length > 0);
+            if (itens.length === 0) return '<span class="text-stone-500">Nenhum informado</span>';
+
+            return itens.map(item => {
+                if (tipo === 'pet') {
+                    const emoji = obterEmojiPet(item);
+                    return `<div class="flex items-center gap-2"><span>${emoji}</span><span>${item}</span></div>`;
+                } else {
+                    return `<div class="flex items-center gap-2"><span>👶</span><span>${item}</span></div>`;
+                }
+            }).join('');
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -465,7 +482,7 @@
             document.getElementById('modal-casal-idade-ela').innerText = casal.idadeEla ? `${casal.idadeEla} anos` : 'Não informada';
             document.getElementById('modal-casal-tempo').innerText = calcularTempoCasamento(casal.dataCasamento);
 
-            document.getElementById('modal-casal-filhos-texto').innerText = casal.filhos || 'Nenhum informado';
+            document.getElementById('modal-casal-filhos-lista').innerHTML = renderizarListaItens(casal.filhos, 'filho');
             const containerFotoFilhos = document.getElementById('container-foto-filhos');
             if (casal.fotoFilhos && casal.fotoFilhos.trim() !== '') {
                 document.getElementById('modal-casal-foto-filhos').src = casal.fotoFilhos;
@@ -474,9 +491,7 @@
                 containerFotoFilhos.classList.add('hidden');
             }
 
-            document.getElementById('modal-casal-pets-texto').innerText = casal.pets || 'Nenhum informado';
-            document.getElementById('modal-casal-pet-emoji').innerText = obterEmojiPet(casal.pets);
-            
+            document.getElementById('modal-casal-pets-lista').innerHTML = renderizarListaItens(casal.pets, 'pet');
             const containerFotoPets = document.getElementById('container-foto-pets');
             if (casal.fotoPets && casal.fotoPets.trim() !== '') {
                 document.getElementById('modal-casal-foto-pets').src = casal.fotoPets;
