@@ -114,22 +114,29 @@
     <div id="modal-casal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-3 sm:p-4 backdrop-blur-sm">
         <div class="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl transform transition-all my-auto">
             
-            <!-- TOPO: Foto menor e botão X fixos -->
-            <div class="relative h-44 sm:h-52 bg-stone-900 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                <img id="modal-casal-foto" src="" alt="Casal" class="w-full h-full object-cover">
-                <button onclick="fecharModalCasal()" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white w-9 h-9 rounded-full flex items-center justify-center transition cursor-pointer z-10 text-sm font-bold shadow">
+            <!-- TOPO DO MODAL: Cabeçalho com Botão X -->
+            <div class="bg-stone-50 px-5 py-3.5 flex justify-between items-center border-b border-stone-100 flex-shrink-0">
+                <span id="modal-casal-categoria" class="text-xs font-semibold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-md"></span>
+                <button onclick="fecharModalCasal()" class="bg-stone-200 hover:bg-stone-300 text-stone-700 w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer text-sm font-bold shadow-sm">
                     ✕
                 </button>
-                <div class="absolute bottom-3 left-3 bg-amber-700 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-md uppercase tracking-wider shadow" id="modal-casal-categoria"></div>
             </div>
             
             <!-- CORPO COM ROLAGEM INTERNA -->
             <div class="p-5 sm:p-6 space-y-4 overflow-y-auto flex-grow">
-                <div>
-                    <h3 id="modal-casal-nome" class="text-xl sm:text-2xl font-bold text-stone-900"></h3>
-                    <p id="modal-casal-bio" class="text-stone-600 text-xs sm:text-sm italic mt-0.5"></p>
+                
+                <!-- Perfil: Foto Quadrada ao lado do Nome -->
+                <div class="flex items-center gap-4 bg-stone-50/80 p-3.5 rounded-2xl border border-stone-100">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-stone-200 flex-shrink-0 shadow-sm flex items-center justify-center">
+                        <img id="modal-casal-foto" src="" alt="Casal" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h3 id="modal-casal-nome" class="text-lg sm:text-xl font-bold text-stone-900 leading-snug"></h3>
+                        <p id="modal-casal-bio" class="text-stone-600 text-xs sm:text-sm italic mt-1"></p>
+                    </div>
                 </div>
                 
+                <!-- Grid de Informações -->
                 <div class="grid grid-cols-3 gap-2">
                     <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center">
                         <span class="text-[10px] text-stone-400 block font-medium">🤵 Ele</span>
@@ -185,22 +192,26 @@
     <div id="modal-acao" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-3 sm:p-4 backdrop-blur-sm">
         <div class="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl transform transition-all my-auto">
             
-            <div class="relative h-44 sm:h-52 bg-stone-900 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                <img id="modal-acao-foto" src="" alt="Ação" class="w-full h-full object-cover">
-                <button onclick="fecharModalAcao()" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white w-9 h-9 rounded-full flex items-center justify-center transition cursor-pointer z-10 text-sm font-bold shadow">
+            <div class="bg-stone-50 px-5 py-3.5 flex justify-between items-center border-b border-stone-100 flex-shrink-0">
+                <span id="modal-acao-status" class="text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider"></span>
+                <button onclick="fecharModalAcao()" class="bg-stone-200 hover:bg-stone-300 text-stone-700 w-8 h-8 rounded-full flex items-center justify-center transition cursor-pointer text-sm font-bold shadow-sm">
                     ✕
                 </button>
-                <div class="absolute bottom-3 left-3 flex gap-2">
-                    <span id="modal-acao-status" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-md uppercase tracking-wider shadow"></span>
-                    <span id="modal-acao-data" class="bg-black/60 text-white text-[11px] font-medium px-2.5 py-0.5 rounded-md shadow"></span>
-                </div>
             </div>
             
             <div class="p-5 sm:p-6 space-y-4 overflow-y-auto flex-grow">
-                <div>
-                    <h3 id="modal-acao-titulo" class="text-xl sm:text-2xl font-bold text-stone-900"></h3>
-                    <p id="modal-acao-descricao" class="text-stone-600 text-xs sm:text-sm mt-2 leading-relaxed whitespace-pre-line"></p>
+                <!-- Foto da Ação ao lado do Título -->
+                <div class="flex items-center gap-4 bg-stone-50/80 p-3.5 rounded-2xl border border-stone-100">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-stone-200 flex-shrink-0 shadow-sm flex items-center justify-center">
+                        <img id="modal-acao-foto" src="" alt="Ação" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <span id="modal-acao-data" class="text-xs text-amber-800 font-semibold block mb-1"></span>
+                        <h3 id="modal-acao-titulo" class="text-lg sm:text-xl font-bold text-stone-900 leading-snug"></h3>
+                    </div>
                 </div>
+
+                <p id="modal-acao-descricao" class="text-stone-600 text-xs sm:text-sm leading-relaxed whitespace-pre-line"></p>
 
                 <!-- Galeria de Fotos da Ação -->
                 <div id="modal-galeria-container" class="hidden space-y-2 pt-3 border-t border-stone-100">
@@ -582,8 +593,8 @@
             const statusTexto = (acao.status || 'Em andamento').trim().toUpperCase();
             statusBadge.innerText = statusTexto;
             statusBadge.className = statusTexto.includes('REALIZADA') 
-                ? "text-[11px] font-semibold px-2.5 py-0.5 rounded-md uppercase tracking-wider bg-emerald-100 text-emerald-800"
-                : "text-[11px] font-semibold px-2.5 py-0.5 rounded-md uppercase tracking-wider bg-amber-100 text-amber-800";
+                ? "text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider bg-emerald-100 text-emerald-800"
+                : "text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider bg-amber-100 text-amber-800";
 
             document.getElementById('modal-acao-data').innerText = acao.data ? `📅 ${acao.data}` : '';
             document.getElementById('modal-acao-titulo').innerText = acao.titulo || '';
