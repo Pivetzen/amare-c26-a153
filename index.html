@@ -111,105 +111,110 @@
     </main>
 
     <!-- MODAL (POPUP) DE DETALHES DO CASAL -->
-    <div id="modal-casal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl transform transition-all my-8">
-            <div class="relative aspect-square sm:aspect-[16/10] bg-stone-900 flex items-center justify-center">
+    <div id="modal-casal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-3 sm:p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl transform transition-all my-auto">
+            
+            <!-- TOPO: Foto menor e botão X fixos -->
+            <div class="relative h-44 sm:h-52 bg-stone-900 flex-shrink-0 flex items-center justify-center overflow-hidden">
                 <img id="modal-casal-foto" src="" alt="Casal" class="w-full h-full object-cover">
-                <button onclick="fecharModalCasal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer z-10">
+                <button onclick="fecharModalCasal()" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white w-9 h-9 rounded-full flex items-center justify-center transition cursor-pointer z-10 text-sm font-bold shadow">
                     ✕
                 </button>
-                <div class="absolute bottom-4 left-4 bg-amber-700 text-white text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider shadow" id="modal-casal-categoria"></div>
+                <div class="absolute bottom-3 left-3 bg-amber-700 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-md uppercase tracking-wider shadow" id="modal-casal-categoria"></div>
             </div>
             
-            <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+            <!-- CORPO COM ROLAGEM INTERNA -->
+            <div class="p-5 sm:p-6 space-y-4 overflow-y-auto flex-grow">
                 <div>
-                    <h3 id="modal-casal-nome" class="text-2xl font-bold text-stone-900"></h3>
-                    <p id="modal-casal-bio" class="text-stone-600 text-sm italic mt-1"></p>
+                    <h3 id="modal-casal-nome" class="text-xl sm:text-2xl font-bold text-stone-900"></h3>
+                    <p id="modal-casal-bio" class="text-stone-600 text-xs sm:text-sm italic mt-0.5"></p>
                 </div>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="bg-stone-50 p-3.5 rounded-2xl border border-stone-100 text-center">
-                        <span class="text-xs text-stone-400 block font-medium">🤵 Idade Ele</span>
-                        <span id="modal-casal-idade-ele" class="text-stone-800 font-bold text-base">-</span>
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center">
+                        <span class="text-[10px] text-stone-400 block font-medium">🤵 Ele</span>
+                        <span id="modal-casal-idade-ele" class="text-stone-800 font-bold text-xs sm:text-sm">-</span>
                     </div>
-                    <div class="bg-stone-50 p-3.5 rounded-2xl border border-stone-100 text-center">
-                        <span class="text-xs text-stone-400 block font-medium">👰 Idade Ela</span>
-                        <span id="modal-casal-idade-ela" class="text-stone-800 font-bold text-base">-</span>
+                    <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center">
+                        <span class="text-[10px] text-stone-400 block font-medium">👰 Ela</span>
+                        <span id="modal-casal-idade-ela" class="text-stone-800 font-bold text-xs sm:text-sm">-</span>
                     </div>
-                    <div class="bg-stone-50 p-3.5 rounded-2xl border border-stone-100 text-center">
-                        <span class="text-xs text-stone-400 block font-medium">💍 Tempo de Casados</span>
-                        <span id="modal-casal-tempo" class="text-stone-800 font-bold text-sm">-</span>
+                    <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center">
+                        <span class="text-[10px] text-stone-400 block font-medium">💍 Casados</span>
+                        <span id="modal-casal-tempo" class="text-stone-800 font-bold text-xs sm:text-sm">-</span>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-stone-100">
-                    <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 space-y-3">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-xl">👶</span>
-                            <span class="text-xs text-amber-800 font-semibold uppercase tracking-wider">Filhos</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-100 space-y-2">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">👶</span>
+                            <span class="text-[11px] text-amber-800 font-semibold uppercase tracking-wider">Filhos</span>
                         </div>
-                        <div id="modal-casal-filhos-lista" class="text-stone-800 font-medium text-sm space-y-1">
+                        <div id="modal-casal-filhos-lista" class="text-stone-800 font-medium text-xs space-y-1">
                             Nenhum informado
                         </div>
-                        <div id="container-foto-filhos" class="hidden rounded-xl overflow-hidden aspect-square bg-stone-100 border border-amber-200/60 shadow-inner flex items-center justify-center">
+                        <div id="container-foto-filhos" class="hidden rounded-lg overflow-hidden h-28 bg-stone-100 border border-amber-200/60 shadow-inner flex items-center justify-center">
                             <img id="modal-casal-foto-filhos" src="" alt="Filhos" class="w-full h-full object-cover">
                         </div>
                     </div>
 
-                    <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 space-y-3">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-xl">🐾</span>
-                            <span class="text-xs text-amber-800 font-semibold uppercase tracking-wider">Pets</span>
+                    <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-100 space-y-2">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-base">🐾</span>
+                            <span class="text-[11px] text-amber-800 font-semibold uppercase tracking-wider">Pets</span>
                         </div>
-                        <div id="modal-casal-pets-lista" class="text-stone-800 font-medium text-sm space-y-1">
+                        <div id="modal-casal-pets-lista" class="text-stone-800 font-medium text-xs space-y-1">
                             Nenhum informado
                         </div>
-                        <div id="container-foto-pets" class="hidden rounded-xl overflow-hidden aspect-square bg-stone-100 border border-amber-200/60 shadow-inner flex items-center justify-center">
+                        <div id="container-foto-pets" class="hidden rounded-lg overflow-hidden h-28 bg-stone-100 border border-amber-200/60 shadow-inner flex items-center justify-center">
                             <img id="modal-casal-foto-pets" src="" alt="Pets" class="w-full h-full object-cover">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-stone-50 px-6 py-4 flex justify-end border-t border-stone-100">
-                <button onclick="fecharModalCasal()" class="bg-stone-800 hover:bg-stone-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition cursor-pointer">Fechar</button>
+            <!-- RODAPÉ: Botão fechar sempre visível -->
+            <div class="bg-stone-50 px-5 py-3 flex justify-end border-t border-stone-100 flex-shrink-0">
+                <button onclick="fecharModalCasal()" class="bg-stone-800 hover:bg-stone-900 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-xl transition cursor-pointer shadow">Fechar</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL (POPUP) DE DETALHES DA AÇÃO -->
-    <div id="modal-acao" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl transform transition-all my-8">
-            <div class="relative aspect-[16/10] bg-stone-900 flex items-center justify-center">
+    <div id="modal-acao" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-3 sm:p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl transform transition-all my-auto">
+            
+            <div class="relative h-44 sm:h-52 bg-stone-900 flex-shrink-0 flex items-center justify-center overflow-hidden">
                 <img id="modal-acao-foto" src="" alt="Ação" class="w-full h-full object-cover">
-                <button onclick="fecharModalAcao()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition cursor-pointer z-10">
+                <button onclick="fecharModalAcao()" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white w-9 h-9 rounded-full flex items-center justify-center transition cursor-pointer z-10 text-sm font-bold shadow">
                     ✕
                 </button>
-                <div class="absolute bottom-4 left-4 flex gap-2">
-                    <span id="modal-acao-status" class="text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider shadow"></span>
-                    <span id="modal-acao-data" class="bg-black/60 text-white text-xs font-medium px-3 py-1 rounded-md shadow"></span>
+                <div class="absolute bottom-3 left-3 flex gap-2">
+                    <span id="modal-acao-status" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-md uppercase tracking-wider shadow"></span>
+                    <span id="modal-acao-data" class="bg-black/60 text-white text-[11px] font-medium px-2.5 py-0.5 rounded-md shadow"></span>
                 </div>
             </div>
             
-            <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+            <div class="p-5 sm:p-6 space-y-4 overflow-y-auto flex-grow">
                 <div>
-                    <h3 id="modal-acao-titulo" class="text-2xl font-bold text-stone-900"></h3>
-                    <p id="modal-acao-descricao" class="text-stone-600 text-sm mt-3 leading-relaxed whitespace-pre-line"></p>
+                    <h3 id="modal-acao-titulo" class="text-xl sm:text-2xl font-bold text-stone-900"></h3>
+                    <p id="modal-acao-descricao" class="text-stone-600 text-xs sm:text-sm mt-2 leading-relaxed whitespace-pre-line"></p>
                 </div>
 
                 <!-- Galeria de Fotos da Ação -->
-                <div id="modal-galeria-container" class="hidden space-y-3 pt-4 border-t border-stone-100">
-                    <h4 class="font-semibold text-stone-900 text-sm flex items-center gap-2">
+                <div id="modal-galeria-container" class="hidden space-y-2 pt-3 border-t border-stone-100">
+                    <h4 class="font-semibold text-stone-900 text-xs sm:text-sm flex items-center gap-1.5">
                         <span>📸</span> Galeria de Fotos da Ação
                     </h4>
-                    <div id="modal-galeria-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div id="modal-galeria-grid" class="grid grid-cols-3 gap-2">
                         <!-- Inserido via JS -->
                     </div>
                 </div>
             </div>
 
-            <div class="bg-stone-50 px-6 py-4 flex justify-end border-t border-stone-100">
-                <button onclick="fecharModalAcao()" class="bg-stone-800 hover:bg-stone-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition cursor-pointer">Fechar</button>
+            <div class="bg-stone-50 px-5 py-3 flex justify-end border-t border-stone-100 flex-shrink-0">
+                <button onclick="fecharModalAcao()" class="bg-stone-800 hover:bg-stone-900 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-xl transition cursor-pointer shadow">Fechar</button>
             </div>
         </div>
     </div>
@@ -376,10 +381,10 @@
             return itens.map(item => {
                 if (tipo === 'pet') {
                     const emoji = obterEmojiPet(item);
-                    return `<div class="flex items-center gap-2"><span>${emoji}</span><span>${item}</span></div>`;
+                    return `<div class="flex items-center gap-1.5"><span>${emoji}</span><span>${item}</span></div>`;
                 } else {
                     const emoji = obterEmojiFilho(item);
-                    return `<div class="flex items-center gap-2"><span>${emoji}</span><span>${item}</span></div>`;
+                    return `<div class="flex items-center gap-1.5"><span>${emoji}</span><span>${item}</span></div>`;
                 }
             }).join('');
         }
@@ -577,8 +582,8 @@
             const statusTexto = (acao.status || 'Em andamento').trim().toUpperCase();
             statusBadge.innerText = statusTexto;
             statusBadge.className = statusTexto.includes('REALIZADA') 
-                ? "text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider bg-emerald-100 text-emerald-800"
-                : "text-xs font-semibold px-3 py-1 rounded-md uppercase tracking-wider bg-amber-100 text-amber-800";
+                ? "text-[11px] font-semibold px-2.5 py-0.5 rounded-md uppercase tracking-wider bg-emerald-100 text-emerald-800"
+                : "text-[11px] font-semibold px-2.5 py-0.5 rounded-md uppercase tracking-wider bg-amber-100 text-amber-800";
 
             document.getElementById('modal-acao-data').innerText = acao.data ? `📅 ${acao.data}` : '';
             document.getElementById('modal-acao-titulo').innerText = acao.titulo || '';
@@ -589,7 +594,7 @@
             
             if (acao.fotosExtras && acao.fotosExtras.length > 0) {
                 galeriaGrid.innerHTML = acao.fotosExtras.map(urlFoto => `
-                    <div class="rounded-xl overflow-hidden aspect-square bg-stone-100 border border-stone-200 shadow-sm flex items-center justify-center hover:opacity-95 transition">
+                    <div class="rounded-lg overflow-hidden aspect-square bg-stone-100 border border-stone-200 shadow-sm flex items-center justify-center hover:opacity-95 transition">
                         <img src="${urlFoto}" alt="Foto da Ação" class="w-full h-full object-cover">
                     </div>
                 `).join('');
