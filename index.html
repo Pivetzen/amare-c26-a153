@@ -355,10 +355,22 @@
             return '🐾';
         }
 
+        function obterEmojiFilho(textoItem) {
+            if (!textoItem) return '👶';
+            // Tenta extrair números do texto (ex: "João (5 anos)" -> 5)
+            const match = textoItem.match(/\d+/);
+            if (match) {
+                const idade = parseInt(match[0], 10);
+                if (idade <= 5) return '👶';       // Até 5 anos: Bebê
+                if (idade <= 17) return '🧒';      // 6 a 17 anos: Criança/Adolescente
+                return '🧑';                       // 18 ou mais: Adulto
+            }
+            return '👶'; // Padrão se não achar número de idade
+        }
+
         function renderizarListaItens(textoBruto, tipo = 'pet') {
             if (!textoBruto || textoBruto.trim() === '') return '<span class="text-stone-500">Nenhum informado</span>';
             
-            // Divide por vírgula ou quebra de linha
             const itens = textoBruto.split(/,|\n/).map(i => i.trim()).filter(i => i.length > 0);
             if (itens.length === 0) return '<span class="text-stone-500">Nenhum informado</span>';
 
@@ -367,7 +379,8 @@
                     const emoji = obterEmojiPet(item);
                     return `<div class="flex items-center gap-2"><span>${emoji}</span><span>${item}</span></div>`;
                 } else {
-                    return `<div class="flex items-center gap-2"><span>👶</span><span>${item}</span></div>`;
+                    const emoji = obterEmojiFilho(item);
+                    return `<div class="flex items-center gap-2"><span>${emoji}</span><span>${item}</span></div>`;
                 }
             }).join('');
         }
