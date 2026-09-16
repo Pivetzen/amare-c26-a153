@@ -100,7 +100,7 @@
         <section id="aba-agenda" class="hidden space-y-8">
             <div>
                 <h2 class="text-2xl font-bold text-stone-900">Próximos Encontros</h2>
-                <p class="text-stone-500 text-sm">Fique por dentro das datas dos nossos encontros e reuniões.</p>
+                <p class="text-stone-500 text-sm">Fique por dentro das datas dos nossos próximos encontros e reuniões.</p>
             </div>
 
             <div id="lista-agenda" class="bg-white rounded-2xl shadow-sm border border-stone-200 divide-y divide-stone-100">
@@ -367,7 +367,6 @@
             // Carregar Ações e Eventos
             const acoesBrutas = await buscarAbaPlanilha('Ações e Eventos');
             todasAsAcoes = acoesBrutas.map((a, index) => {
-                // Coleta foto principal e fotos extras (ex: foto 2, foto 3, galeria)
                 let fotosExtras = [];
                 for (let prop in a) {
                     if ((prop.includes('foto') || prop.includes('imagem') || prop.includes('galeria')) && 
@@ -392,12 +391,29 @@
 
             // Carregar Agenda
             const agendaBruta = await buscarAbaPlanilha('agenda');
-            const agenda = agendaBruta.map(ag => ({
-                data: pegarValor(ag, ['data', 'dia', 'quando']),
-                titulo: pegarValor(ag, ['titulo', 'evento', 'encontro']),
-                descricao: pegarValor(ag, ['descricao', 'local', 'detalhe', 'tema']),
-                tag: pegarValor(ag, ['tag', 'status', 'confirmacao'])
-            }));
+            const agenda = agendaBruta.map(ag => {
+                let dataStr = pegarValor(ag, ['data', 'dia', 'quando']);
+                let dataObj = null;
+
+                if (dataStr && dataStr.includes('/')) {
+                    const partes = dataStr.split('/');
+                    if (partes.length === 3) {
+                        dataObj = new Date(`${partes[2]}-${partes[1]}-${partes[0]}`);
+                    }
+                } else if (dataStr) {
+                    dataObj = new Date(dataStr);
+                }
+
+                return {
+                    dataOriginal: dataStr,
+                    dataObj: dataObj,
+                    titulo: pegarValor(ag, ['titulo', 'evento', 'encontro']),
+                    descricao: pegarValor(ag, ['descricao', 'local', 'detalhe', 'tema']),
+                    status: pegarValor(ag, ['status', 'estado', 'situacao']),
+                    responsavel: pegarValor(ag, ['responsavel', 'contato', 'pessoa']),
+                    whatsapp: pegarValor(ag, ['whatsapp', 'celular', 'telefone'])
+                };
+            });
             renderizarAgenda(agenda);
         });
 
@@ -451,7 +467,7 @@
             document.getElementById('modal-casal-pets-texto').innerText = casal.pets || 'Nenhum informado';
             const containerFotoPets = document.getElementById('container-foto-pets');
             if (casal.fotoPets && casal.fotoPets.trim() !== '') {
-                document.getElementById('modal-casal-foto-pets').src = casal.fotoPets;
+                document.getElementById('modal-casal-foto-filhos').src = casal.fotoPets; // Correção
                 containerFotoPets.classList.remove('hidden');
             } else {
                 containerFotoPets.classList.add('hidden');
@@ -518,7 +534,6 @@
             document.getElementById('modal-acao-titulo').innerText = acao.titulo || '';
             document.getElementById('modal-acao-descricao').innerText = acao.descricao || 'Nenhuma descrição detalhada informada.';
 
-            // Renderizar Galeria de Fotos Extras
             const galeriaContainer = document.getElementById('modal-galeria-container');
             const galeriaGrid = document.getElementById('modal-galeria-grid');
             
@@ -566,21 +581,56 @@
 
         function renderizarAgenda(agenda) {
             const lista = document.getElementById('lista-agenda');
-            if (!agenda || agenda.length === 0) {
-                lista.innerHTML = '<p class="p-6 text-stone-500">Nenhum evento encontrado.</p>';
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+
+            // Filtrar apenas datas futuras e ordenar por ordem cronológica (mais próxima primeiro)
+            const agendaFutura = agenda.filter(item => {
+                if (!item.dataObj || isNaN(item.dataObj.getTime())) return false;
+                return item.dataObj >= hoje;
+            }).sort((a, b) => a.dataObj - b.dataObj);
+
+            if (agendaFutura.length === 0) {
+                lista.innerHTML = '<p class="p-6 text-stone-500">Nenhum evento futuro encontrado na agenda.</p>';
                 return;
             }
 
-            lista.innerHTML = agenda.map(item => `
-                <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <span class="text-amber-700 font-semibold text-sm">${item.data || ''}</span>
-                        <h3 class="font-bold text-lg text-stone-900">${item.titulo || ''}</h3>
-                        <p class="text-stone-500 text-sm">${item.descricao || ''}</p>
+            lista.innerHTML = agendaFutura.map(item => {
+                const statusTxt = (item.status || 'PREVISTO').trim().toUpperCase();
+                let badgeClass = "bg-amber-100 text-amber-800";
+                if (statusTxt.includes('CONFIRMADO')) {
+                    badgeClass = "bg-emerald-100 text-emerald-800";
+                }
+
+                // Botão WhatsApp
+                let botaoWpp = '';
+                if (item.whatsapp && item.responsavel) {
+                    const numeroLimpo = item.whatsapp.replace(/\D/g, '');
+                    const mensagem = encodeURIComponent(`Olá ${item.responsavel}, tenho uma dúvida sobre o evento "${item.titulo}" (${item.dataOriginal}).`);
+                    const linkWpp = `https://wa.me/${numeroLimpo}?text=${mensagem}`;
+                    botaoWpp = `
+                        <a href="${linkWpp}" target="_blank" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition shadow-sm">
+                            <span>💬</span> TIRAR DÚVIDAS (${item.responsavel.toUpperCase()})
+                        </a>
+                    `;
+                }
+
+                return `
+                    <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-3">
+                                <span class="text-amber-700 font-semibold text-sm">📅 ${item.dataOriginal || ''}</span>
+                                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-md uppercase tracking-wider ${badgeClass}">${statusTxt}</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-stone-900">${item.titulo || ''}</h3>
+                            <p class="text-stone-500 text-sm">${item.descricao || ''}</p>
+                        </div>
+                        <div class="flex items-center">
+                            ${botaoWpp}
+                        </div>
                     </div>
-                    <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-medium">${item.tag || ''}</span>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
     </script>
 </body>
