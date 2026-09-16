@@ -158,7 +158,7 @@
 
                     <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100 space-y-3">
                         <div class="flex items-center space-x-2">
-                            <span class="text-xl">🐾</span>
+                            <span id="modal-casal-pet-emoji" class="text-xl">🐾</span>
                             <div>
                                 <span class="text-xs text-amber-800 font-semibold uppercase tracking-wider block">Pets</span>
                                 <span id="modal-casal-pets-texto" class="text-stone-800 font-medium text-sm">Nenhum informado</span>
@@ -342,7 +342,17 @@
                 if (resultado) resultado += ' e ';
                 resultado += `${meses} ${meses === 1 ? 'mês' : 'meses'}`;
             }
-            return resultado ? `Casados há ${resultado}` : 'Casados há menos de um mês';
+            return resultado || 'Menos de um mês';
+        }
+
+        function obterEmojiPet(textoPet) {
+            if (!textoPet) return '🐾';
+            const txt = textoPet.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            if (txt.includes('gato') || txt.includes('gata') || txt.includes('felino')) return '🐱';
+            if (txt.includes('cachorro') || txt.includes('cao') || txt.includes('cahorro') || txt.includes('dog') || txt.includes('pet')) return '🐶';
+            if (txt.includes('papagaio') || txt.includes('passaro') || txt.includes('ave') || txt.includes('loro')) return '🦜';
+            if (txt.includes('hamster') || txt.includes('rato') || txt.includes('coelho')) return '🐹';
+            return '🐾';
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -465,9 +475,11 @@
             }
 
             document.getElementById('modal-casal-pets-texto').innerText = casal.pets || 'Nenhum informado';
+            document.getElementById('modal-casal-pet-emoji').innerText = obterEmojiPet(casal.pets);
+            
             const containerFotoPets = document.getElementById('container-foto-pets');
             if (casal.fotoPets && casal.fotoPets.trim() !== '') {
-                document.getElementById('modal-casal-foto-filhos').src = casal.fotoPets; // Correção
+                document.getElementById('modal-casal-foto-pets').src = casal.fotoPets;
                 containerFotoPets.classList.remove('hidden');
             } else {
                 containerFotoPets.classList.add('hidden');
@@ -480,6 +492,20 @@
         function fecharModalCasal() {
             document.getElementById('modal-casal').classList.add('hidden');
             document.body.style.overflow = 'auto';
+        }
+
+        function filtrarCasais(categoria, btnElement) {
+            document.querySelectorAll('#aba-casais .flex.flex-wrap.gap-2 button').forEach(b => {
+                b.className = "px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-100 transition cursor-pointer";
+            });
+            btnElement.className = "px-4 py-2 bg-amber-700 text-white rounded-xl text-sm font-medium transition shadow cursor-pointer";
+
+            if (categoria === 'todos') {
+                renderizarCasais(todosOsCasais);
+            } else {
+                const filtrados = todosOsCasais.filter(c => (c.categoria || '').toLowerCase().includes(categoria.toLowerCase()));
+                renderizarCasais(filtrados);
+            }
         }
 
         function renderizarAcoes(acoes) {
@@ -584,7 +610,6 @@
             const hoje = new Date();
             hoje.setHours(0, 0, 0, 0);
 
-            // Filtrar apenas datas futuras e ordenar por ordem cronológica (mais próxima primeiro)
             const agendaFutura = agenda.filter(item => {
                 if (!item.dataObj || isNaN(item.dataObj.getTime())) return false;
                 return item.dataObj >= hoje;
@@ -602,7 +627,6 @@
                     badgeClass = "bg-emerald-100 text-emerald-800";
                 }
 
-                // Botão WhatsApp
                 let botaoWpp = '';
                 if (item.whatsapp && item.responsavel) {
                     const numeroLimpo = item.whatsapp.replace(/\D/g, '');
