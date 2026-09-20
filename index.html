@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <!-- Novos 2 Cards Principais -->
+            <!-- 2 Cards Principais -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto text-center">
                 <!-- Card 1: Oração do Amare -->
                 <div onclick="abrirModalOracao()" class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 hover:border-red-300 hover:shadow-md transition cursor-pointer group flex flex-col items-center justify-center">
@@ -116,93 +116,112 @@
 
         <!-- ABA 5: GERENCIAMENTO & PRESTAÇÃO DE CONTAS -->
         <section id="aba-gerenciamento" class="hidden space-y-8">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-stone-900">Gerenciamento & Prestação de Contas</h2>
-                    <p class="text-stone-500 text-sm">Prestação de contas transparente com mensalidades, arrecadações e despesas.</p>
-                </div>
 
-                <!-- Seletor de Mês/Ano para Filtro -->
-                <div class="flex items-center gap-2 bg-white p-2 rounded-2xl border border-stone-200 shadow-sm">
-                    <label for="filtro-mes-ano" class="text-xs font-semibold text-stone-600 pl-2">📅 Mês Referência:</label>
-                    <select id="filtro-mes-ano" onchange="carregarGerenciamentoCompleto()" class="bg-stone-50 text-stone-800 text-xs font-bold py-2 px-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-red-700">
-                        <option value="TODOS">Todos os meses</option>
-                    </select>
-                </div>
+            <!-- TELA DE LOGIN / SOLICITAÇÃO DE SENHA -->
+            <div id="gerenciamento-login" class="max-w-md mx-auto bg-white p-8 rounded-3xl border border-stone-200 shadow-sm text-center space-y-4 my-12">
+                <span class="text-4xl">🔒</span>
+                <h3 class="text-xl font-bold text-stone-900">Área Restrita</h3>
+                <p class="text-stone-500 text-xs">Digite a senha de acesso para visualizar a prestação de contas do grupo.</p>
+                
+                <form onsubmit="validarSenhaGerenciamento(event)" class="space-y-3 pt-2">
+                    <input type="password" id="input-senha-gerenciamento" placeholder="Digite a senha..." class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm text-center focus:outline-none focus:ring-2 focus:ring-red-700">
+                    <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-semibold py-2.5 rounded-xl transition cursor-pointer text-sm shadow">
+                        Acessar Gerenciamento
+                    </button>
+                </form>
+                <p id="msg-erro-senha" class="text-xs text-rose-600 font-medium hidden">Senha incorreta. Tente novamente.</p>
             </div>
 
-            <!-- Resumo Financeiro Geral -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-200 shadow-sm">
-                    <span class="text-xs font-semibold text-emerald-700 uppercase tracking-wider block">Receitas Realizadas</span>
-                    <span id="resumo-receitas" class="text-2xl font-bold text-emerald-800 mt-1 block">R$ 0,00</span>
-                    <span class="text-[11px] text-emerald-600 mt-1 block">Mensalidades + Outras Arrecadações</span>
-                </div>
-                <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200 shadow-sm">
-                    <span class="text-xs font-semibold text-amber-700 uppercase tracking-wider block">Pendente de Recebimento</span>
-                    <span id="resumo-pendente" class="text-2xl font-bold text-amber-800 mt-1 block">R$ 0,00</span>
-                    <span class="text-[11px] text-amber-600 mt-1 block">Mensalidades já vencidas</span>
-                </div>
-                <div class="bg-rose-50 p-5 rounded-2xl border border-rose-200 shadow-sm">
-                    <span class="text-xs font-semibold text-rose-700 uppercase tracking-wider block">Despesas / Investimentos</span>
-                    <span id="resumo-despesas" class="text-2xl font-bold text-rose-800 mt-1 block">R$ 0,00</span>
-                    <span class="text-[11px] text-rose-600 mt-1 block">Custos e investimentos executados</span>
-                </div>
-                <div class="bg-sky-50 p-5 rounded-2xl border border-sky-200 shadow-sm">
-                    <span class="text-xs font-semibold text-sky-700 uppercase tracking-wider block">Saldo em Caixa</span>
-                    <span id="resumo-saldo" class="text-2xl font-bold text-sky-800 mt-1 block">R$ 0,00</span>
-                    <span class="text-[11px] text-sky-600 mt-1 block">Receita Realizada − Despesas</span>
-                </div>
-            </div>
-
-            <!-- Seção de Mensalidades por Casal -->
-            <div class="space-y-4 pt-2">
-                <h3 class="text-lg font-bold text-stone-900 border-b border-stone-200 pb-2 flex items-center gap-2">
-                    <span>💳</span> Mensalidades por Casal
-                </h3>
-                <div id="grid-mensalidades-casais" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <p class="text-stone-500">Carregando mensalidades...</p>
-                </div>
-            </div>
-
-            <!-- Seção Inferior: Outras Arrecadações e Despesas Empilhadas em Linhas Únicas -->
-            <div class="space-y-6 pt-4">
-                <!-- Card Outras Arrecadações -->
-                <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center cursor-pointer select-none" onclick="alternarDetalhes('container-outras-receitas', 'btn-outras-receitas')">
-                        <div class="flex items-center gap-2">
-                            <h3 class="font-bold text-stone-900 flex items-center gap-2">
-                                <span>🎁</span> Outras Arrecadações & Pix
-                            </h3>
-                            <button id="btn-outras-receitas" class="text-xs text-red-700 hover:text-red-800 font-semibold underline ml-2">
-                                Ver detalhes ↓
-                            </button>
-                        </div>
-                        <span id="total-outras-receitas" class="text-sm font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">R$ 0,00</span>
+            <!-- CONTEÚDO RESTRITO DA ABA (OCULTO ATÉ VALIDAR SENHA) -->
+            <div id="gerenciamento-conteudo" class="hidden space-y-8">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-stone-900">Gerenciamento & Prestação de Contas</h2>
+                        <p class="text-stone-500 text-sm">Prestação de contas transparente com mensalidades, arrecadações e despesas.</p>
                     </div>
-                    <div id="container-outras-receitas" class="hidden space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all border-t border-stone-100 pt-3">
-                        <div id="lista-outras-receitas" class="space-y-2">
-                            <p class="text-stone-400">Nenhuma outra arrecadação registrada.</p>
-                        </div>
+
+                    <!-- Seletor de Mês/Ano para Filtro -->
+                    <div class="flex items-center gap-2 bg-white p-2 rounded-2xl border border-stone-200 shadow-sm">
+                        <label for="filtro-mes-ano" class="text-xs font-semibold text-stone-600 pl-2">📅 Mês Referência:</label>
+                        <select id="filtro-mes-ano" onchange="carregarGerenciamentoCompleto()" class="bg-stone-50 text-stone-800 text-xs font-bold py-2 px-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-red-700">
+                            <option value="TODOS">Todos os meses</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Card Despesas -->
-                <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center cursor-pointer select-none" onclick="alternarDetalhes('container-despesas', 'btn-despesas')">
-                        <div class="flex items-center gap-2">
-                            <h3 class="font-bold text-stone-900 flex items-center gap-2">
-                                <span>💸</span> Despesas & Investimentos
-                            </h3>
-                            <button id="btn-despesas" class="text-xs text-red-700 hover:text-red-800 font-semibold underline ml-2">
-                                Ver detalhes ↓
-                            </button>
-                        </div>
-                        <span id="total-despesas-card" class="text-sm font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100">R$ 0,00</span>
+                <!-- Resumo Financeiro Geral -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-200 shadow-sm">
+                        <span class="text-xs font-semibold text-emerald-700 uppercase tracking-wider block">Receitas Realizadas</span>
+                        <span id="resumo-receitas" class="text-2xl font-bold text-emerald-800 mt-1 block">R$ 0,00</span>
+                        <span class="text-[11px] text-emerald-600 mt-1 block">Mensalidades + Outras Arrecadações</span>
                     </div>
-                    <div id="container-despesas" class="hidden space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all border-t border-stone-100 pt-3">
-                        <div id="lista-despesas" class="space-y-2">
-                            <p class="text-stone-400">Nenhuma despesa registrada.</p>
+                    <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200 shadow-sm">
+                        <span class="text-xs font-semibold text-amber-700 uppercase tracking-wider block">Pendente de Recebimento</span>
+                        <span id="resumo-pendente" class="text-2xl font-bold text-amber-800 mt-1 block">R$ 0,00</span>
+                        <span class="text-[11px] text-amber-600 mt-1 block">Mensalidades já vencidas</span>
+                    </div>
+                    <div class="bg-rose-50 p-5 rounded-2xl border border-rose-200 shadow-sm">
+                        <span class="text-xs font-semibold text-rose-700 uppercase tracking-wider block">Despesas / Investimentos</span>
+                        <span id="resumo-despesas" class="text-2xl font-bold text-rose-800 mt-1 block">R$ 0,00</span>
+                        <span class="text-[11px] text-rose-600 mt-1 block">Custos e investimentos executados</span>
+                    </div>
+                    <div class="bg-sky-50 p-5 rounded-2xl border border-sky-200 shadow-sm">
+                        <span class="text-xs font-semibold text-sky-700 uppercase tracking-wider block">Saldo em Caixa</span>
+                        <span id="resumo-saldo" class="text-2xl font-bold text-sky-800 mt-1 block">R$ 0,00</span>
+                        <span class="text-[11px] text-sky-600 mt-1 block">Receita Realizada − Despesas</span>
+                    </div>
+                </div>
+
+                <!-- Seção de Mensalidades por Casal -->
+                <div class="space-y-4 pt-2">
+                    <h3 class="text-lg font-bold text-stone-900 border-b border-stone-200 pb-2 flex items-center gap-2">
+                        <span>💳</span> Mensalidades por Casal
+                    </h3>
+                    <div id="grid-mensalidades-casais" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <p class="text-stone-500">Carregando mensalidades...</p>
+                    </div>
+                </div>
+
+                <!-- Seção Inferior: Outras Arrecadações e Despesas Empilhadas em Linhas Únicas -->
+                <div class="space-y-6 pt-4">
+                    <!-- Card Outras Arrecadações -->
+                    <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
+                        <div class="flex justify-between items-center cursor-pointer select-none" onclick="alternarDetalhes('container-outras-receitas', 'btn-outras-receitas')">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-stone-900 flex items-center gap-2">
+                                    <span>🎁</span> Outras Arrecadações & Pix
+                                </h3>
+                                <button id="btn-outras-receitas" class="text-xs text-red-700 hover:text-red-800 font-semibold underline ml-2">
+                                    Ver detalhes ↓
+                                </button>
+                            </div>
+                            <span id="total-outras-receitas" class="text-sm font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">R$ 0,00</span>
+                        </div>
+                        <div id="container-outras-receitas" class="hidden space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all border-t border-stone-100 pt-3">
+                            <div id="lista-outras-receitas" class="space-y-2">
+                                <p class="text-stone-400">Nenhuma outra arrecadação registrada.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Despesas -->
+                    <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
+                        <div class="flex justify-between items-center cursor-pointer select-none" onclick="alternarDetalhes('container-despesas', 'btn-despesas')">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-stone-900 flex items-center gap-2">
+                                    <span>💸</span> Despesas & Investimentos
+                                </h3>
+                                <button id="btn-despesas" class="text-xs text-red-700 hover:text-red-800 font-semibold underline ml-2">
+                                    Ver detalhes ↓
+                                </button>
+                            </div>
+                            <span id="total-despesas-card" class="text-sm font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100">R$ 0,00</span>
+                        </div>
+                        <div id="container-despesas" class="hidden space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all border-t border-stone-100 pt-3">
+                            <div id="lista-despesas" class="space-y-2">
+                                <p class="text-stone-400">Nenhuma despesa registrada.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -337,6 +356,7 @@
         const SPREADSHEET_ID = '1bc_VUUks33mKZ67e3mA3O4SLWW_KN9AzTiUkY5ZaKZc';
         let todosOsCasais = [];
         let todasAsAcoes = [];
+        let senhaPlanilha = null;
 
         function mudarAba(abaId) {
             ['home', 'casais', 'acoes', 'agenda', 'gerenciamento'].forEach(aba => {
@@ -357,6 +377,35 @@
                 ativoBtn.className = "px-3 sm:px-4 py-2 rounded-lg transition bg-white text-red-900 shadow font-medium";
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function obterSenhaPlanilha() {
+            if (senhaPlanilha) return senhaPlanilha;
+            try {
+                const dadosConfig = await buscarAbaPlanilha('Config');
+                if (dadosConfig && dadosConfig.length > 0) {
+                    senhaPlanilha = pegarValor(dadosConfig[0], ['senha', 'pass', 'password', 'chave']);
+                }
+            } catch (e) {
+                console.error("Erro ao carregar senha da aba Config:", e);
+            }
+            return senhaPlanilha;
+        }
+
+        async function validarSenhaGerenciamento(event) {
+            if (event) event.preventDefault();
+            const inputSenha = document.getElementById('input-senha-gerenciamento').value;
+            const msgErro = document.getElementById('msg-erro-senha');
+            
+            const senhaCorreta = await obterSenhaPlanilha();
+
+            if (senhaCorreta && inputSenha === senhaCorreta) {
+                document.getElementById('gerenciamento-login').classList.add('hidden');
+                document.getElementById('gerenciamento-conteudo').classList.remove('hidden');
+                if (msgErro) msgErro.classList.add('hidden');
+            } else {
+                if (msgErro) msgErro.classList.remove('hidden');
+            }
         }
 
         function abrirModalOracao() {
@@ -615,7 +664,7 @@
         function renderizarCasais(lista) {
             const grid = document.getElementById('grid-casais');
             if (!lista || lista.length === 0) {
-                grid.innerHTML = '<p class="text-stone-500 col-span-full">Nenum casal encontrado na aba "casais".</p>';
+                grid.innerHTML = '<p class="text-stone-500 col-span-full">Nenhum casal encontrado na aba "casais".</p>';
                 return;
             }
 
