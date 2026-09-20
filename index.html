@@ -48,17 +48,17 @@
                 </div>
             </div>
 
-            <!-- Card Aniversariantes do Mês -->
+            <!-- Card Comemorações do Mês -->
             <div class="bg-white rounded-3xl border border-red-100 p-6 sm:p-8 shadow-sm space-y-4 max-w-4xl mx-auto">
                 <div class="flex items-center gap-3 border-b border-stone-100 pb-3">
-                    <span class="text-3xl">🎂</span>
+                    <span class="text-3xl">🎉</span>
                     <div>
-                        <h2 class="text-xl font-bold text-stone-900">Aniversariantes do Mês</h2>
-                        <p class="text-stone-500 text-xs">Aniversários celebrados neste mês no nosso grupo</p>
+                        <h2 class="text-xl font-bold text-stone-900">Comemorações do Mês</h2>
+                        <p class="text-stone-500 text-xs">Aniversários e bodas de casamento celebrados neste mês</p>
                     </div>
                 </div>
-                <div id="container-aniversariantes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
-                    <p class="text-stone-400 text-sm col-span-full">Carregando aniversariantes...</p>
+                <div id="container-comemoracoes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
+                    <p class="text-stone-400 text-sm col-span-full">Carregando comemorações...</p>
                 </div>
             </div>
 
@@ -555,7 +555,6 @@
 
         function calcularIdade(dataStr) {
             if (!dataStr) return null;
-            // Se for apenas o número de anos informado diretamente
             if (!isNaN(dataStr) && dataStr.trim().length <= 2) {
                 return { idade: parseInt(dataStr, 10), dataFmt: '' };
             }
@@ -672,11 +671,11 @@
                 fotoFilhos: pegarValor(c, ['foto filhos', 'fotofilhos']),
                 pets: pegarValor(c, ['pets', 'pet', 'animais']),
                 fotoPets: pegarValor(c, ['foto pets', 'fotopets']),
-                dataCasamento: pegarValor(c, ['data casados', 'data casamento', 'casamento'])
+                dataCasamento: pegarValor(c, ['data casamento', 'data casados', 'casamento'])
             }));
             
             renderizarCasais(todosOsCasais);
-            renderizarAniversariantesMes(todosOsCasais);
+            renderizarComemoracoesMes(todosOsCasais);
 
             const acoesBrutas = await buscarAbaPlanilha('Ações e Eventos');
             todasAsAcoes = acoesBrutas.map((a, index) => {
@@ -722,53 +721,75 @@
             await carregarGerenciamentoCompleto();
         });
 
-        function renderizarAniversariantesMes(casais) {
-            const container = document.getElementById('container-aniversariantes');
+        function renderizarComemoracoesMes(casais) {
+            const container = document.getElementById('container-comemoracoes');
             const mesAtual = new Date().getMonth();
-            const aniversariantes = [];
+            const comemorações = [];
 
             casais.forEach(c => {
-                // Tenta extrair nomes se não foram definidos explicitamente
                 let nEle = c.nomeEle || (c.nome ? c.nome.split('e')[1] || 'Ele' : 'Ele');
                 let nEla = c.nomeEla || (c.nome ? c.nome.split('e')[0] || 'Ela' : 'Ela');
 
+                // Aniversário Ele
                 const calcEle = calcularIdade(c.idadeEleStr);
                 if (calcEle && calcEle.dtNasc && calcEle.dtNasc.getMonth() === mesAtual) {
-                    aniversariantes.push({
-                        nome: nEle.trim(),
+                    comemorações.push({
+                        tipo: 'pessoal',
+                        emoji: '🎂',
+                        titulo: nEle.trim(),
+                        subtitulo: c.nome,
                         dia: calcEle.dtNasc.getDate(),
-                        idade: calcEle.idade,
-                        casal: c.nome
+                        detalhe: `${calcEle.idade} anos`
                     });
                 }
 
+                // Aniversário Ela
                 const calcEla = calcularIdade(c.idadeElaStr);
                 if (calcEla && calcEla.dtNasc && calcEla.dtNasc.getMonth() === mesAtual) {
-                    aniversariantes.push({
-                        nome: nEla.trim(),
+                    comemorações.push({
+                        tipo: 'pessoal',
+                        emoji: '🎂',
+                        titulo: nEla.trim(),
+                        subtitulo: c.nome,
                         dia: calcEla.dtNasc.getDate(),
-                        idade: calcEla.idade,
-                        casal: c.nome
+                        detalhe: `${calcEla.idade} anos`
                     });
+                }
+
+                // Aniversário de Casamento
+                if (c.dataCasamento) {
+                    const dtCasal = converterDataParaObjeto(c.dataCasamento);
+                    if (dtCasal && dtCasal.getMonth() === mesAtual) {
+                        const tempoCasadoStr = calcularTempoCasamento(c.dataCasamento);
+                        comemorações.push({
+                            tipo: 'casamento',
+                            emoji: '👩‍❤️‍👨',
+                            titulo: c.nome,
+                            subtitulo: 'Aniversário de Casamento',
+                            dia: dtCasal.getDate(),
+                            detalhe: tempoCasadoStr
+                        });
+                    }
                 }
             });
 
-            aniversariantes.sort((a, b) => a.dia - b.dia);
+            comemorações.sort((a, b) => a.dia - b.dia);
 
-            if (aniversariantes.length === 0) {
-                container.innerHTML = '<p class="text-stone-400 text-sm italic col-span-full py-2">Nenhum aniversariante registrado neste mês.</p>';
+            if (comemorações.length === 0) {
+                container.innerHTML = '<p class="text-stone-400 text-sm italic col-span-full py-2">Nenhuma comemoração registrada neste mês.</p>';
                 return;
             }
 
-            container.innerHTML = aniversariantes.map(a => `
-                <div class="bg-red-50/60 border border-red-100 p-3 rounded-2xl flex items-center justify-between">
-                    <div>
-                        <span class="font-bold text-stone-900 text-sm block">${a.nome}</span>
-                        <span class="text-xs text-stone-500 block">${a.casal || ''}</span>
+            container.innerHTML = comemorações.map(item => `
+                <div class="bg-red-50/60 border border-red-100 p-3 rounded-2xl flex items-center gap-3">
+                    <span class="text-2xl">${item.emoji}</span>
+                    <div class="flex-grow min-w-0">
+                        <span class="font-bold text-stone-900 text-sm block truncate">${item.titulo}</span>
+                        <span class="text-xs text-stone-500 block truncate">${item.subtitulo}</span>
                     </div>
-                    <div class="text-right">
-                        <span class="text-xs font-bold text-red-800 bg-red-100 px-2 py-0.5 rounded-lg block">Dia ${String(a.dia).padStart(2, '0')}</span>
-                        <span class="text-[10px] text-stone-400 font-medium block mt-0.5">${a.idade} anos</span>
+                    <div class="text-right flex-shrink-0">
+                        <span class="text-xs font-bold text-red-800 bg-red-100 px-2 py-0.5 rounded-lg block">Dia ${String(item.dia).padStart(2, '0')}</span>
+                        <span class="text-[10px] text-stone-400 font-medium block mt-0.5">${item.detalhe}</span>
                     </div>
                 </div>
             `).join('');
@@ -777,7 +798,7 @@
         function renderizarCasais(lista) {
             const grid = document.getElementById('grid-casais');
             if (!lista || lista.length === 0) {
-                grid.innerHTML = '<p class="text-stone-500 col-span-full">Nenhum casal encontrado na aba "casais".</p>';
+                grid.innerHTML = '<p class="text-stone-500 col-span-full">Nenum casal encontrado na aba "casais".</p>';
                 return;
             }
 
