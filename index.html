@@ -115,32 +115,74 @@
             </div>
         </section>
 
-        <!-- ABA 5: GERENCIAMENTO E PRESTAÇÃO DE CONTAS -->
+        <!-- ABA 5: GERENCIAMENTO & PRESTAÇÃO DE CONTAS -->
         <section id="aba-gerenciamento" class="hidden space-y-8">
             <div>
                 <h2 class="text-2xl font-bold text-stone-900">Gerenciamento & Prestação de Contas</h2>
-                <p class="text-stone-500 text-sm">Acompanhamento das mensalidades dos casais e resumo geral das receitas.</p>
+                <p class="text-stone-500 text-sm">Prestação de contas transparente com mensalidades, arrecadações e despesas.</p>
             </div>
 
-            <!-- Resumo Financeiro -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 flex flex-col justify-between">
-                    <span class="text-xs font-semibold text-stone-400 uppercase tracking-wider">Total Previsto</span>
-                    <span id="resumo-total-previsto" class="text-2xl font-bold text-stone-800 mt-2">R$ 0,00</span>
+            <!-- Resumo Financeiro Geral -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-200 shadow-sm">
+                    <span class="text-xs font-semibold text-emerald-700 uppercase tracking-wider block">Receitas Realizadas</span>
+                    <span id="resumo-receitas" class="text-2xl font-bold text-emerald-800 mt-1 block">R$ 0,00</span>
+                    <span class="text-[11px] text-emerald-600 mt-1 block">Mensalidades + Outras Arrecadações</span>
                 </div>
-                <div class="bg-emerald-50 p-6 rounded-2xl shadow-sm border border-emerald-200 flex flex-col justify-between">
-                    <span class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Total Arrecadado (Receita)</span>
-                    <span id="resumo-total-pago" class="text-2xl font-bold text-emerald-800 mt-2">R$ 0,00</span>
+                <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200 shadow-sm">
+                    <span class="text-xs font-semibold text-amber-700 uppercase tracking-wider block">Pendente de Recebimento</span>
+                    <span id="resumo-pendente" class="text-2xl font-bold text-amber-800 mt-1 block">R$ 0,00</span>
+                    <span class="text-[11px] text-amber-600 mt-1 block">Mensalidades já vencidas</span>
                 </div>
-                <div class="bg-amber-50 p-6 rounded-2xl shadow-sm border border-amber-200 flex flex-col justify-between">
-                    <span class="text-xs font-semibold text-amber-700 uppercase tracking-wider">Pendente de Recebimento</span>
-                    <span id="resumo-total-pendente" class="text-2xl font-bold text-amber-800 mt-2">R$ 0,00</span>
+                <div class="bg-rose-50 p-5 rounded-2xl border border-rose-200 shadow-sm">
+                    <span class="text-xs font-semibold text-rose-700 uppercase tracking-wider block">Despesas / Investimentos</span>
+                    <span id="resumo-despesas" class="text-2xl font-bold text-rose-800 mt-1 block">R$ 0,00</span>
+                    <span class="text-[11px] text-rose-600 mt-1 block">Custos e investimentos executados</span>
+                </div>
+                <div class="bg-sky-50 p-5 rounded-2xl border border-sky-200 shadow-sm">
+                    <span class="text-xs font-semibold text-sky-700 uppercase tracking-wider block">Saldo em Caixa</span>
+                    <span id="resumo-saldo" class="text-2xl font-bold text-sky-800 mt-1 block">R$ 0,00</span>
+                    <span class="text-[11px] text-sky-600 mt-1 block">Receita Realizada − Despesas</span>
                 </div>
             </div>
 
-            <!-- Cards por Casal -->
-            <div id="grid-gerenciamento" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <p class="text-stone-500">Carregando informações financeiras...</p>
+            <!-- Seção de Mensalidades por Casal -->
+            <div class="space-y-4 pt-2">
+                <h3 class="text-lg font-bold text-stone-900 border-b border-stone-200 pb-2 flex items-center gap-2">
+                    <span>💳</span> Mensalidades por Casal
+                </h3>
+                <div id="grid-mensalidades-casais" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <p class="text-stone-500">Carregando mensalidades...</p>
+                </div>
+            </div>
+
+            <!-- Seção Inferior: Outras Arrecadações e Despesas -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
+                <!-- Card Outras Arrecadações -->
+                <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+                        <h3 class="font-bold text-stone-900 flex items-center gap-2">
+                            <span>🎁</span> Outras Arrecadações & Pix
+                        </h3>
+                        <span id="total-outras-receitas" class="text-sm font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">R$ 0,00</span>
+                    </div>
+                    <div id="lista-outras-receitas" class="space-y-2 text-sm max-h-80 overflow-y-auto pr-1">
+                        <p class="text-stone-400">Nenhuma outra arrecadação registrada.</p>
+                    </div>
+                </div>
+
+                <!-- Card Despesas -->
+                <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+                        <h3 class="font-bold text-stone-900 flex items-center gap-2">
+                            <span>💸</span> Despesas & Investimentos
+                        </h3>
+                        <span id="total-despesas-card" class="text-sm font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100">R$ 0,00</span>
+                    </div>
+                    <div id="lista-despesas" class="space-y-2 text-sm max-h-80 overflow-y-auto pr-1">
+                        <p class="text-stone-400">Nenhuma despesa registrada.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -155,8 +197,6 @@
     <!-- Lógica JavaScript -->
     <script>
         const SPREADSHEET_ID = '1bc_VUUks33mKZ67e3mA3O4SLWW_KN9AzTiUkY5ZaKZc';
-        let todosOsCasais = [];
-        let todasAsAcoes = [];
 
         function mudarAba(abaId) {
             ['home', 'casais', 'acoes', 'agenda', 'gerenciamento'].forEach(aba => {
@@ -246,12 +286,6 @@
             return '';
         }
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            // Carrega Gerenciamento
-            const dadosGerenciamento = await buscarAbaPlanilha('Gerenciamento');
-            renderizarGerenciamento(dadosGerenciamento);
-        });
-
         function converterParaNumero(valorStr) {
             if (!valorStr) return 0;
             let num = valorStr.replace(/[^\d,-]/g, '').replace(',', '.');
@@ -262,76 +296,180 @@
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        function renderizarGerenciamento(dados) {
-            const grid = document.getElementById('grid-gerenciamento');
-            if (!dados || dados.length === 0) {
-                grid.innerHTML = '<p class="text-stone-500 col-span-full">Nenhum registro encontrado na aba "Gerenciamento". Verifique a planilha.</p>';
-                return;
+        function converterDataParaObjeto(dataStr) {
+            if (!dataStr) return null;
+            if (dataStr.includes('/')) {
+                const p = dataStr.split('/');
+                if (p.length === 3) return new Date(p[2], p[1] - 1, p[0]);
+            } else if (dataStr.includes('-')) {
+                const p = dataStr.split('-');
+                if (p.length === 3) return new Date(p[0], p[1] - 1, p[2]);
             }
+            return null;
+        }
 
-            let totalArrecadado = 0;
-            let totalPendente = 0;
+        window.addEventListener('DOMContentLoaded', async () => {
+            await carregarGerenciamentoCompleto();
+        });
 
-            const htmlCards = dados.map(item => {
-                const casal = pegarValor(item, ['casal', 'nome']) || 'Casal';
-                const valorStr = pegarValor(item, ['valor', 'mensalidade', 'devido']);
-                const valor = converterParaNumero(valorStr);
-                const dataPagamento = pegarValor(item, ['data', 'pagamento', 'datapagamento']);
-                const statusStr = (pegarValor(item, ['status', 'situacao']) || '').toLowerCase();
-                const observacao = pegarValor(item, ['obs', 'observacao', 'observacoes']);
+        async function carregarGerenciamentoCompleto() {
+            const [mensalidadesBrutas, outrasReceitasBrutas, despesasBrutas] = await Promise.all([
+                buscarAbaPlanilha('Mensalidades'),
+                buscarAbaPlanilha('Outras Receitas'),
+                buscarAbaPlanilha('Despesas')
+            ]);
 
-                // Regra: Pago se status for 'pago' ou se houver data de pagamento preenchida
-                const estaPago = statusStr.includes('pago') || Boolean(dataPagamento && dataPagamento.trim() !== '');
+            const hoje = new Date();
+            hoje.setHours(23, 59, 59, 999);
 
-                if (estaPago) {
-                    totalArrecadado += valor;
-                } else {
-                    totalPendente += valor;
+            let totalMensalidadesPagas = 0;
+            let totalMensalidadesPendentes = 0;
+
+            // Agrupar mensalidades por Casal
+            const casaisMap = {};
+
+            mensalidadesBrutas.forEach(row => {
+                const casal = pegarValor(row, ['casal', 'nome']) || 'Casal Não Identificado';
+                const mes = pegarValor(row, ['mes', 'referencia', 'descricao']) || 'Mês';
+                const valor = converterParaNumero(pegarValor(row, ['valor', 'cobrado', 'mensalidade']));
+                const dataPrevistaStr = pegarValor(row, ['prevista', 'data prevista', 'vencimento']);
+                const dataPagamentoStr = pegarValor(row, ['pagamento', 'data pagamento', 'pago em']);
+
+                const dtPrevista = converterDataParaObjeto(dataPrevistaStr);
+                const dtPagamento = converterDataParaObjeto(dataPagamentoStr);
+
+                // Regra: Não exibir se a data prevista for estritamente no futuro (depois de hoje)
+                if (dtPrevista && dtPrevista > hoje) {
+                    return; 
                 }
 
-                // Definindo estilização (Verde se Pago)
-                const cardBg = estaPago ? 'bg-emerald-50 border-emerald-300' : 'bg-white border-stone-200';
-                const badgeBg = estaPago ? 'bg-emerald-600 text-white' : 'bg-amber-100 text-amber-800';
-                const statusTexto = estaPago ? 'PAGO' : 'PENDENTE';
+                const estaPago = Boolean(dtPagamento || (pegarValor(row, ['status']).toLowerCase().includes('pago')));
 
-                return `
-                    <div class="${cardBg} border rounded-2xl p-5 shadow-sm transition flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-start gap-2 mb-3">
-                                <h3 class="font-bold text-stone-900 text-base">${casal}</h3>
-                                <span class="text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${badgeBg}">
-                                    ${statusTexto}
+                if (estaPago) {
+                    totalMensalidadesPagas += valor;
+                } else {
+                    totalMensalidadesPendentes += valor;
+                }
+
+                if (!casaisMap[casal]) {
+                    casaisMap[casal] = [];
+                }
+
+                casaisMap[casal].push({
+                    mes,
+                    valor,
+                    dataPagamentoStr,
+                    dataPrevistaStr,
+                    estaPago
+                });
+            });
+
+            // Renderizar Cards dos Casais
+            const gridCasais = document.getElementById('grid-mensalidades-casais');
+            const nomesCasais = Object.keys(casaisMap);
+
+            if (nomesCasais.length === 0) {
+                gridCasais.innerHTML = '<p class="text-stone-500 col-span-full">Nenhuma mensalidade com data prevista até hoje foi encontrada.</p>';
+            } else {
+                gridCasais.innerHTML = nomesCasais.map(casal => {
+                    const itens = casaisMap[casal];
+                    const todosPagos = itens.every(i => i.estaPago);
+
+                    const itensHtml = itens.map(item => `
+                        <div class="p-2.5 rounded-xl border ${item.estaPago ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'} text-xs space-y-1">
+                            <div class="flex justify-between items-center font-semibold">
+                                <span class="${item.estaPago ? 'text-emerald-900' : 'text-amber-900'}">${item.mes}</span>
+                                <span class="${item.estaPago ? 'text-emerald-800' : 'text-amber-800'}">${formatarMoeda(item.valor)}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-[11px] text-stone-500">
+                                <span>Data Pagamento:</span>
+                                <span class="font-medium ${item.estaPago ? 'text-emerald-700' : 'text-amber-700'}">
+                                    ${item.dataPagamentoStr || 'Pendente'}
                                 </span>
                             </div>
+                        </div>
+                    `).join('');
 
-                            <div class="space-y-2 text-xs">
-                                <div class="flex justify-between text-stone-600 border-b border-stone-100/60 pb-1.5">
-                                    <span>Mensalidade:</span>
-                                    <span class="font-semibold text-stone-800">${formatarMoeda(valor)}</span>
-                                </div>
-                                <div class="flex justify-between text-stone-600 border-b border-stone-100/60 pb-1.5">
-                                    <span>Data Pagamento:</span>
-                                    <span class="font-semibold ${estaPago ? 'text-emerald-700' : 'text-stone-400'}">
-                                        ${dataPagamento || '—'}
+                    return `
+                        <div class="bg-white border border-stone-200 rounded-2xl p-5 shadow-sm space-y-3 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center border-b border-stone-100 pb-2 mb-3">
+                                    <h4 class="font-bold text-stone-900 text-base">${casal}</h4>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${todosPagos ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                        ${todosPagos ? 'EM DIA' : 'PENDÊNCIA'}
                                     </span>
                                 </div>
-                                ${observacao ? `
-                                    <div class="text-stone-500 text-[11px] italic pt-1">
-                                        Obs: ${observacao}
-                                    </div>
-                                ` : ''}
+                                <div class="space-y-2">
+                                    ${itensHtml}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            }
 
-            grid.innerHTML = htmlCards;
+            // Processar Outras Arrecadações
+            let totalOutrasReceitas = 0;
+            const listaOutras = document.getElementById('lista-outras-receitas');
 
-            // Atualizar Totais nos Cards do Topo
-            document.getElementById('resumo-total-previsto').innerText = formatarMoeda(totalArrecadado + totalPendente);
-            document.getElementById('resumo-total-pago').innerText = formatarMoeda(totalArrecadado);
-            document.getElementById('resumo-total-pendente').innerText = formatarMoeda(totalPendente);
+            if (outrasReceitasBrutas.length === 0) {
+                listaOutras.innerHTML = '<p class="text-stone-400 text-xs">Nenhuma outra arrecadação informada.</p>';
+            } else {
+                listaOutras.innerHTML = outrasReceitasBrutas.map(row => {
+                    const desc = pegarValor(row, ['origem', 'descricao', 'titulo', 'nome']) || 'Arrecadação';
+                    const val = converterParaNumero(pegarValor(row, ['valor', 'quantia']));
+                    const data = pegarValor(row, ['data', 'recebimento']);
+                    totalOutrasReceitas += val;
+
+                    return `
+                        <div class="flex justify-between items-center bg-stone-50 p-2.5 rounded-xl border border-stone-100">
+                            <div>
+                                <p class="font-semibold text-stone-800">${desc}</p>
+                                <p class="text-[11px] text-stone-400">${data || 'Data não inf.'}</p>
+                            </div>
+                            <span class="font-bold text-emerald-700">${formatarMoeda(val)}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Processar Despesas
+            let totalDespesas = 0;
+            const listaDespesas = document.getElementById('lista-despesas');
+
+            if (despesasBrutas.length === 0) {
+                listaDespesas.innerHTML = '<p class="text-stone-400 text-xs">Nenhuma despesa informada.</p>';
+            } else {
+                listaDespesas.innerHTML = despesasBrutas.map(row => {
+                    const desc = pegarValor(row, ['descricao', 'item', 'nome']) || 'Despesa';
+                    const cat = pegarValor(row, ['categoria', 'tipo']);
+                    const val = converterParaNumero(pegarValor(row, ['valor', 'custo']));
+                    const data = pegarValor(row, ['data', 'pagamento']);
+                    totalDespesas += val;
+
+                    return `
+                        <div class="flex justify-between items-center bg-stone-50 p-2.5 rounded-xl border border-stone-100">
+                            <div>
+                                <p class="font-semibold text-stone-800">${desc}</p>
+                                <p class="text-[11px] text-stone-400">${cat ? cat + ' • ' : ''}${data || 'Data não inf.'}</p>
+                            </div>
+                            <span class="font-bold text-rose-700">${formatarMoeda(val)}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Totais e Saldos Gerais
+            const receitasTotais = totalMensalidadesPagas + totalOutrasReceitas;
+            const saldoCaixa = receitasTotais - totalDespesas;
+
+            document.getElementById('resumo-receitas').innerText = formatarMoeda(receitasTotais);
+            document.getElementById('resumo-pendente').innerText = formatarMoeda(totalMensalidadesPendentes);
+            document.getElementById('resumo-despesas').innerText = formatarMoeda(totalDespesas);
+            document.getElementById('resumo-saldo').innerText = formatarMoeda(saldoCaixa);
+
+            document.getElementById('total-outras-receitas').innerText = formatarMoeda(totalOutrasReceitas);
+            document.getElementById('total-despesas-card').innerText = formatarMoeda(totalDespesas);
         }
     </script>
 </body>
