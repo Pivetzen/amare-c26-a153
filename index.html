@@ -158,29 +158,43 @@
 
             <!-- Seção Inferior: Outras Arrecadações e Despesas -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
-                <!-- Card Outras Arrecadações -->
+                <!-- Card Outras Arrecadações Retrátil -->
                 <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center border-b border-stone-100 pb-3">
-                        <h3 class="font-bold text-stone-900 flex items-center gap-2">
-                            <span>🎁</span> Outras Arrecadações & Pix
-                        </h3>
+                    <div class="flex justify-between items-center border-b border-stone-100 pb-3 cursor-pointer select-none" onclick="alternarDetalhes('container-outras-receitas', 'btn-outras-receitas')">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-stone-900 flex items-center gap-2">
+                                <span>🎁</span> Outras Arrecadações & Pix
+                            </h3>
+                            <button id="btn-outras-receitas" class="text-xs text-red-700 hover:text-red-800 font-semibold underline ml-2">
+                                Ocultar detalhes ↑
+                            </button>
+                        </div>
                         <span id="total-outras-receitas" class="text-sm font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">R$ 0,00</span>
                     </div>
-                    <div id="lista-outras-receitas" class="space-y-2 text-sm max-h-80 overflow-y-auto pr-1">
-                        <p class="text-stone-400">Nenhuma outra arrecadação registrada.</p>
+                    <div id="container-outras-receitas" class="space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all">
+                        <div id="lista-outras-receitas" class="space-y-2">
+                            <p class="text-stone-400">Nenhuma outra arrecadação registrada.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Card Despesas -->
+                <!-- Card Despesas Retrátil -->
                 <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center border-b border-stone-100 pb-3">
-                        <h3 class="font-bold text-stone-900 flex items-center gap-2">
-                            <span>💸</span> Despesas & Investimentos
-                        </h3>
+                    <div class="flex justify-between items-center border-b border-stone-100 pb-3 cursor-pointer select-none" onclick="alternarDetalhes('container-despesas', 'btn-despesas')">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-stone-900 flex items-center gap-2">
+                                <span>💸</span> Despesas & Investimentos
+                            </h3>
+                            <button id="btn-despesas" class="text-xs text-red-700 hover:text-red-800 font-semibold underline ml-2">
+                                Ocultar detalhes ↑
+                            </button>
+                        </div>
                         <span id="total-despesas-card" class="text-sm font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100">R$ 0,00</span>
                     </div>
-                    <div id="lista-despesas" class="space-y-2 text-sm max-h-80 overflow-y-auto pr-1">
-                        <p class="text-stone-400">Nenhuma despesa registrada.</p>
+                    <div id="container-despesas" class="space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all">
+                        <div id="lista-despesas" class="space-y-2">
+                            <p class="text-stone-400">Nenhuma despesa registrada.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -217,6 +231,20 @@
                 ativoBtn.className = "px-3 sm:px-4 py-2 rounded-lg transition bg-white text-red-900 shadow font-medium";
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function alternarDetalhes(idContainer, idBotao) {
+            const container = document.getElementById(idContainer);
+            const btn = document.getElementById(idBotao);
+            if (!container) return;
+
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                if (btn) btn.innerText = 'Ocultar detalhes ↑';
+            } else {
+                container.classList.add('hidden');
+                if (btn) btn.innerText = 'Ver detalhes ↓';
+            }
         }
 
         async function buscarAbaPlanilha(nomeAba) {
@@ -364,16 +392,18 @@
                 });
             });
 
-            // Renderizar Cards dos Casais
+            // Renderizar Cards dos Casais (com funcionalidade Retrátil)
             const gridCasais = document.getElementById('grid-mensalidades-casais');
             const nomesCasais = Object.keys(casaisMap);
 
             if (nomesCasais.length === 0) {
                 gridCasais.innerHTML = '<p class="text-stone-500 col-span-full">Nenhuma mensalidade com data prevista até hoje foi encontrada.</p>';
             } else {
-                gridCasais.innerHTML = nomesCasais.map(casal => {
+                gridCasais.innerHTML = nomesCasais.map((casal, index) => {
                     const itens = casaisMap[casal];
                     const todosPagos = itens.every(i => i.estaPago);
+                    const containerId = `detalhes-casal-${index}`;
+                    const btnId = `btn-casal-${index}`;
 
                     const itensHtml = itens.map(item => `
                         <div class="p-2.5 rounded-xl border ${item.estaPago ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'} text-xs space-y-1">
@@ -391,17 +421,26 @@
                     `).join('');
 
                     return `
-                        <div class="bg-white border border-stone-200 rounded-2xl p-5 shadow-sm space-y-3 flex flex-col justify-between">
+                        <div class="bg-white border border-stone-200 rounded-2xl p-5 shadow-sm transition space-y-3">
                             <div>
-                                <div class="flex justify-between items-center border-b border-stone-100 pb-2 mb-3">
+                                <div class="flex justify-between items-center border-b border-stone-100 pb-2">
                                     <h4 class="font-bold text-stone-900 text-base">${casal}</h4>
                                     <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${todosPagos ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
                                         ${todosPagos ? 'EM DIA' : 'PENDÊNCIA'}
                                     </span>
                                 </div>
-                                <div class="space-y-2">
-                                    ${itensHtml}
-                                </div>
+                            </div>
+
+                            <!-- Botão de expansão -->
+                            <div class="flex justify-end">
+                                <button id="${btnId}" onclick="alternarDetalhes('${containerId}', '${btnId}')" class="text-xs text-red-700 hover:text-red-800 font-semibold cursor-pointer underline">
+                                    Ver detalhes ↓
+                                </button>
+                            </div>
+
+                            <!-- Conteúdo Retrátil -->
+                            <div id="${containerId}" class="hidden space-y-2 pt-1 border-t border-stone-100">
+                                ${itensHtml}
                             </div>
                         </div>
                     `;
