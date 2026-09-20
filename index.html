@@ -156,42 +156,42 @@
                 </div>
             </div>
 
-            <!-- Seção Inferior: Outras Arrecadações e Despesas -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
-                <!-- Card Outras Arrecadações Retrátil -->
+            <!-- Seção Inferior: Outras Arrecadações e Despesas Empilhadas em Linhas Únicas -->
+            <div class="space-y-6 pt-4">
+                <!-- Card Outras Arrecadações (Linha Única - Inicia Oculto) -->
                 <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center border-b border-stone-100 pb-3 cursor-pointer select-none" onclick="alternarDetalhes('container-outras-receitas', 'btn-outras-receitas')">
+                    <div class="flex justify-between items-center cursor-pointer select-none" onclick="alternarDetalhes('container-outras-receitas', 'btn-outras-receitas')">
                         <div class="flex items-center gap-2">
                             <h3 class="font-bold text-stone-900 flex items-center gap-2">
                                 <span>🎁</span> Outras Arrecadações & Pix
                             </h3>
                             <button id="btn-outras-receitas" class="text-xs text-red-700 hover:text-red-800 font-semibold underline ml-2">
-                                Ocultar detalhes ↑
+                                Ver detalhes ↓
                             </button>
                         </div>
                         <span id="total-outras-receitas" class="text-sm font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">R$ 0,00</span>
                     </div>
-                    <div id="container-outras-receitas" class="space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all">
+                    <div id="container-outras-receitas" class="hidden space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all border-t border-stone-100 pt-3">
                         <div id="lista-outras-receitas" class="space-y-2">
                             <p class="text-stone-400">Nenhuma outra arrecadação registrada.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card Despesas Retrátil -->
+                <!-- Card Despesas (Linha Única - Inicia Oculto) -->
                 <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center border-b border-stone-100 pb-3 cursor-pointer select-none" onclick="alternarDetalhes('container-despesas', 'btn-despesas')">
+                    <div class="flex justify-between items-center cursor-pointer select-none" onclick="alternarDetalhes('container-despesas', 'btn-despesas')">
                         <div class="flex items-center gap-2">
                             <h3 class="font-bold text-stone-900 flex items-center gap-2">
                                 <span>💸</span> Despesas & Investimentos
                             </h3>
                             <button id="btn-despesas" class="text-xs text-red-700 hover:text-red-800 font-semibold underline ml-2">
-                                Ocultar detalhes ↑
+                                Ver detalhes ↓
                             </button>
                         </div>
                         <span id="total-despesas-card" class="text-sm font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100">R$ 0,00</span>
                     </div>
-                    <div id="container-despesas" class="space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all">
+                    <div id="container-despesas" class="hidden space-y-2 text-sm max-h-80 overflow-y-auto pr-1 transition-all border-t border-stone-100 pt-3">
                         <div id="lista-despesas" class="space-y-2">
                             <p class="text-stone-400">Nenhuma despesa registrada.</p>
                         </div>
