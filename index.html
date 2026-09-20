@@ -48,6 +48,20 @@
                 </div>
             </div>
 
+            <!-- Card Aniversariantes do Mês -->
+            <div class="bg-white rounded-3xl border border-red-100 p-6 sm:p-8 shadow-sm space-y-4 max-w-4xl mx-auto">
+                <div class="flex items-center gap-3 border-b border-stone-100 pb-3">
+                    <span class="text-3xl">🎂</span>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900">Aniversariantes do Mês</h2>
+                        <p class="text-stone-500 text-xs">Aniversários celebrados neste mês no nosso grupo</p>
+                    </div>
+                </div>
+                <div id="container-aniversariantes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
+                    <p class="text-stone-400 text-sm col-span-full">Carregando aniversariantes...</p>
+                </div>
+            </div>
+
             <!-- 2 Cards Principais -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto text-center">
                 <!-- Card 1: Oração do Amare -->
@@ -132,7 +146,7 @@
                 <p id="msg-erro-senha" class="text-xs text-rose-600 font-medium hidden">Senha incorreta. Tente novamente.</p>
             </div>
 
-            <!-- CONTEÚDO RESTRITO DA ABA (OCULTO ATÉ VALIDAR SENHA) -->
+            <!-- CONTEÚDO RESTRITO DA ABA -->
             <div id="gerenciamento-conteudo" class="hidden space-y-8">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
@@ -183,7 +197,7 @@
                     </div>
                 </div>
 
-                <!-- Seção Inferior: Outras Arrecadações e Despesas Empilhadas em Linhas Únicas -->
+                <!-- Seção Inferior -->
                 <div class="space-y-6 pt-4">
                     <!-- Card Outras Arrecadações -->
                     <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
@@ -272,17 +286,19 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-2">
-                    <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center">
-                        <span class="text-[10px] text-stone-400 block font-medium">🤵 Ele</span>
-                        <span id="modal-casal-idade-ele" class="text-stone-800 font-bold text-xs sm:text-sm">-</span>
+                    <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center flex flex-col justify-center">
+                        <span id="modal-casal-rotulo-ele" class="text-[10px] text-stone-400 block font-medium">🤵 Ele</span>
+                        <span id="modal-casal-idade-ele" class="text-stone-800 font-bold text-xs sm:text-sm mt-0.5">-</span>
+                        <span id="modal-casal-nasc-ele" class="text-[10px] text-stone-400 block mt-0.5"></span>
                     </div>
-                    <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center">
-                        <span class="text-[10px] text-stone-400 block font-medium">👰 Ela</span>
-                        <span id="modal-casal-idade-ela" class="text-stone-800 font-bold text-xs sm:text-sm">-</span>
+                    <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center flex flex-col justify-center">
+                        <span id="modal-casal-rotulo-ela" class="text-[10px] text-stone-400 block font-medium">👰 Ela</span>
+                        <span id="modal-casal-idade-ela" class="text-stone-800 font-bold text-xs sm:text-sm mt-0.5">-</span>
+                        <span id="modal-casal-nasc-ela" class="text-[10px] text-stone-400 block mt-0.5"></span>
                     </div>
-                    <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center">
+                    <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-center flex flex-col justify-center">
                         <span class="text-[10px] text-stone-400 block font-medium">💍 Casados</span>
-                        <span id="modal-casal-tempo" class="text-stone-800 font-bold text-xs sm:text-sm">-</span>
+                        <span id="modal-casal-tempo" class="text-stone-800 font-bold text-xs sm:text-sm mt-0.5">-</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -384,20 +400,17 @@
             try {
                 const dadosConfig = await buscarAbaPlanilha('Config');
                 if (dadosConfig && dadosConfig.length > 0) {
-                    // Procura a linha onde qualquer coluna contenha a palavra 'senha'
                     const linhaSenha = dadosConfig.find(row => 
                         Object.values(row).some(v => v.toString().toLowerCase().trim() === 'senha')
                     );
         
                     if (linhaSenha) {
-                        // Pega o valor correspondente da coluna 'valor' ou o outro dado da linha
                         senhaPlanilha = pegarValor(linhaSenha, ['valor', 'conteudo', 'resposta']);
                         if (!senhaPlanilha) {
                             const valores = Object.values(linhaSenha).filter(v => v.toString().toLowerCase().trim() !== 'senha');
                             if (valores.length > 0) senhaPlanilha = valores[0];
                         }
                     } else {
-                        // Caso a senha esteja configurada na linha 1 como cabeçalho/primeiro registro
                         senhaPlanilha = pegarValor(dadosConfig[0], ['senha', 'pass', 'password', 'chave', 'valor']);
                     }
                 }
@@ -406,6 +419,7 @@
             }
             return senhaPlanilha ? senhaPlanilha.toString().trim() : null;
         }
+
         async function validarSenhaGerenciamento(event) {
             if (event) event.preventDefault();
             const inputSenha = document.getElementById('input-senha-gerenciamento').value.trim();
@@ -525,14 +539,43 @@
 
         function converterDataParaObjeto(dataStr) {
             if (!dataStr) return null;
-            if (dataStr.includes('/')) {
-                const p = dataStr.split('/');
-                if (p.length === 3) return new Date(p[2], p[1] - 1, p[0]);
-            } else if (dataStr.includes('-')) {
-                const p = dataStr.split('-');
-                if (p.length === 3) return new Date(p[0], p[1] - 1, p[2]);
+            let p = [];
+            if (dataStr.includes('/')) p = dataStr.split('/');
+            else if (dataStr.includes('-')) p = dataStr.split('-');
+
+            if (p.length === 3) {
+                let d = parseInt(p[0], 10);
+                let m = parseInt(p[1], 10) - 1;
+                let a = parseInt(p[2], 10);
+                if (a < 100) a += 1900;
+                return new Date(a, m, d);
             }
             return null;
+        }
+
+        function calcularIdade(dataStr) {
+            if (!dataStr) return null;
+            // Se for apenas o número de anos informado diretamente
+            if (!isNaN(dataStr) && dataStr.trim().length <= 2) {
+                return { idade: parseInt(dataStr, 10), dataFmt: '' };
+            }
+
+            const dtNasc = converterDataParaObjeto(dataStr);
+            if (!dtNasc || isNaN(dtNasc.getTime())) return null;
+
+            const hoje = new Date();
+            let idade = hoje.getFullYear() - dtNasc.getFullYear();
+            let m = hoje.getMonth() - dtNasc.getMonth();
+
+            if (m < 0 || (m === 0 && hoje.getDate() < dtNasc.getDate())) {
+                idade--;
+            }
+
+            const diaStr = String(dtNasc.getDate()).padStart(2, '0');
+            const mesStr = String(dtNasc.getMonth() + 1).padStart(2, '0');
+            const dataFmt = `${diaStr}/${mesStr}/${dtNasc.getFullYear()}`;
+
+            return { idade, dataFmt, dtNasc };
         }
 
         function calcularTempoCasamento(dataStr) {
@@ -617,19 +660,23 @@
             const dadosCasaisBrutos = await buscarAbaPlanilha('casais');
             todosOsCasais = dadosCasaisBrutos.map((c, index) => ({
                 id: index,
-                nome: pegarValor(c, ['nome', 'casal', 'titulo']),
-                categoria: pegarValor(c, ['categoria', 'tipo', 'funcao', 'papel']),
+                nome: pegarValor(c, ['nome do casal', 'nome', 'casal', 'titulo']),
+                nomeEle: pegarValor(c, ['nome ele', 'homem', 'ele']),
+                nomeEla: pegarValor(c, ['nome ela', 'mulher', 'ela']),
+                categoria: pegarValor(c, ['categoria', 'funcao', 'papel', 'tipo']),
                 foto: pegarValor(c, ['foto', 'imagem', 'link', 'url']),
-                bio: pegarValor(c, ['bio', 'descricao', 'frase', 'mensagem']),
-                idadeEle: pegarValor(c, ['idade ele', 'idade homem', 'ele']),
-                idadeEla: pegarValor(c, ['idade ela', 'idade mulher', 'ela']),
+                bio: pegarValor(c, ['bio', 'historia', 'descricao', 'frase']),
+                idadeEleStr: pegarValor(c, ['nascimento ele', 'nasc ele', 'idade ele', 'ele']),
+                idadeElaStr: pegarValor(c, ['nascimento ela', 'nasc ela', 'idade ela', 'ela']),
                 filhos: pegarValor(c, ['filhos', 'filho']),
-                fotoFilhos: pegarValor(c, ['foto filhos', 'fotofilhos', 'imagem filhos']),
+                fotoFilhos: pegarValor(c, ['foto filhos', 'fotofilhos']),
                 pets: pegarValor(c, ['pets', 'pet', 'animais']),
-                fotoPets: pegarValor(c, ['foto pets', 'fotopets', 'imagem pets']),
-                dataCasamento: pegarValor(c, ['data casados', 'data casamento', 'casamento', 'tempo de casado'])
+                fotoPets: pegarValor(c, ['foto pets', 'fotopets']),
+                dataCasamento: pegarValor(c, ['data casados', 'data casamento', 'casamento'])
             }));
+            
             renderizarCasais(todosOsCasais);
+            renderizarAniversariantesMes(todosOsCasais);
 
             const acoesBrutas = await buscarAbaPlanilha('Ações e Eventos');
             todasAsAcoes = acoesBrutas.map((a, index) => {
@@ -675,6 +722,58 @@
             await carregarGerenciamentoCompleto();
         });
 
+        function renderizarAniversariantesMes(casais) {
+            const container = document.getElementById('container-aniversariantes');
+            const mesAtual = new Date().getMonth();
+            const aniversariantes = [];
+
+            casais.forEach(c => {
+                // Tenta extrair nomes se não foram definidos explicitamente
+                let nEle = c.nomeEle || (c.nome ? c.nome.split('e')[1] || 'Ele' : 'Ele');
+                let nEla = c.nomeEla || (c.nome ? c.nome.split('e')[0] || 'Ela' : 'Ela');
+
+                const calcEle = calcularIdade(c.idadeEleStr);
+                if (calcEle && calcEle.dtNasc && calcEle.dtNasc.getMonth() === mesAtual) {
+                    aniversariantes.push({
+                        nome: nEle.trim(),
+                        dia: calcEle.dtNasc.getDate(),
+                        idade: calcEle.idade,
+                        casal: c.nome
+                    });
+                }
+
+                const calcEla = calcularIdade(c.idadeElaStr);
+                if (calcEla && calcEla.dtNasc && calcEla.dtNasc.getMonth() === mesAtual) {
+                    aniversariantes.push({
+                        nome: nEla.trim(),
+                        dia: calcEla.dtNasc.getDate(),
+                        idade: calcEla.idade,
+                        casal: c.nome
+                    });
+                }
+            });
+
+            aniversariantes.sort((a, b) => a.dia - b.dia);
+
+            if (aniversariantes.length === 0) {
+                container.innerHTML = '<p class="text-stone-400 text-sm italic col-span-full py-2">Nenhum aniversariante registrado neste mês.</p>';
+                return;
+            }
+
+            container.innerHTML = aniversariantes.map(a => `
+                <div class="bg-red-50/60 border border-red-100 p-3 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <span class="font-bold text-stone-900 text-sm block">${a.nome}</span>
+                        <span class="text-xs text-stone-500 block">${a.casal || ''}</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-red-800 bg-red-100 px-2 py-0.5 rounded-lg block">Dia ${String(a.dia).padStart(2, '0')}</span>
+                        <span class="text-[10px] text-stone-400 font-medium block mt-0.5">${a.idade} anos</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function renderizarCasais(lista) {
             const grid = document.getElementById('grid-casais');
             if (!lista || lista.length === 0) {
@@ -709,8 +808,30 @@
             document.getElementById('modal-casal-nome').innerText = casal.nome || '';
             document.getElementById('modal-casal-bio').innerText = casal.bio ? `"${casal.bio}"` : '';
             
-            document.getElementById('modal-casal-idade-ele').innerText = casal.idadeEle ? `${casal.idadeEle} anos` : 'Não informada';
-            document.getElementById('modal-casal-idade-ela').innerText = casal.idadeEla ? `${casal.idadeEla} anos` : 'Não informada';
+            // Nomes Individuais nos rótulos
+            if (casal.nomeEle) document.getElementById('modal-casal-rotulo-ele').innerText = `🤵 ${casal.nomeEle}`;
+            if (casal.nomeEla) document.getElementById('modal-casal-rotulo-ela').innerText = `👰 ${casal.nomeEla}`;
+
+            // Idades e Aniversários Ele
+            const calcEle = calcularIdade(casal.idadeEleStr);
+            if (calcEle) {
+                document.getElementById('modal-casal-idade-ele').innerText = `${calcEle.idade} anos`;
+                document.getElementById('modal-casal-nasc-ele').innerText = calcEle.dataFmt ? `🎂 ${calcEle.dataFmt}` : '';
+            } else {
+                document.getElementById('modal-casal-idade-ele').innerText = 'Não informada';
+                document.getElementById('modal-casal-nasc-ele').innerText = '';
+            }
+
+            // Idades e Aniversários Ela
+            const calcEla = calcularIdade(casal.idadeElaStr);
+            if (calcEla) {
+                document.getElementById('modal-casal-idade-ela').innerText = `${calcEla.idade} anos`;
+                document.getElementById('modal-casal-nasc-ela').innerText = calcEla.dataFmt ? `🎂 ${calcEla.dataFmt}` : '';
+            } else {
+                document.getElementById('modal-casal-idade-ela').innerText = 'Não informada';
+                document.getElementById('modal-casal-nasc-ela').innerText = '';
+            }
+
             document.getElementById('modal-casal-tempo').innerText = calcularTempoCasamento(casal.dataCasamento);
 
             document.getElementById('modal-casal-filhos-lista').innerHTML = renderizarListaItens(casal.filhos, 'filho');
