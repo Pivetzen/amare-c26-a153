@@ -384,21 +384,21 @@
             try {
                 const dadosConfig = await buscarAbaPlanilha('Config');
                 if (dadosConfig && dadosConfig.length > 0) {
-                    // Busca primeiro no formato B1 (cabeçalho "senha")
-                    senhaPlanilha = pegarValor(dadosConfig[0], ['senha', 'pass', 'password', 'chave']);
-
-                    // Se não encontrou, busca no formato de linhas (Chave na col A, Valor na col B)
-                    if (!senhaPlanilha) {
-                        const linhaSenha = dadosConfig.find(row => 
-                            Object.values(row).some(v => v.toString().toLowerCase().trim() === 'senha')
-                        );
-                        if (linhaSenha) {
-                            senhaPlanilha = pegarValor(linhaSenha, ['valor', 'conteudo', 'resposta', 'coluna2']);
-                            if (!senhaPlanilha) {
-                                const vals = Object.values(linhaSenha).filter(v => v.toString().toLowerCase().trim() !== 'senha');
-                                if (vals.length > 0) senhaPlanilha = vals[0];
-                            }
+                    // Procura a linha onde qualquer coluna contenha a palavra 'senha'
+                    const linhaSenha = dadosConfig.find(row => 
+                        Object.values(row).some(v => v.toString().toLowerCase().trim() === 'senha')
+                    );
+        
+                    if (linhaSenha) {
+                        // Pega o valor correspondente da coluna 'valor' ou o outro dado da linha
+                        senhaPlanilha = pegarValor(linhaSenha, ['valor', 'conteudo', 'resposta']);
+                        if (!senhaPlanilha) {
+                            const valores = Object.values(linhaSenha).filter(v => v.toString().toLowerCase().trim() !== 'senha');
+                            if (valores.length > 0) senhaPlanilha = valores[0];
                         }
+                    } else {
+                        // Caso a senha esteja configurada na linha 1 como cabeçalho/primeiro registro
+                        senhaPlanilha = pegarValor(dadosConfig[0], ['senha', 'pass', 'password', 'chave', 'valor']);
                     }
                 }
             } catch (e) {
@@ -406,7 +406,6 @@
             }
             return senhaPlanilha ? senhaPlanilha.toString().trim() : null;
         }
-
         async function validarSenhaGerenciamento(event) {
             if (event) event.preventDefault();
             const inputSenha = document.getElementById('input-senha-gerenciamento').value.trim();
