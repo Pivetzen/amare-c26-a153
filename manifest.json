@@ -1,0 +1,23 @@
+{
+  "name": "Amare | C26 - A153",
+  "short_name": "Amare",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#b91c1c",
+  "description": "Aplicativo oficial do grupo Amare C26 - A153. Em tudo, amar e servir!",
+  "icons": [
+    {
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSncClGVvyVmqADRxjZuNGWdrE6_RARJ9PbrweTFNjcDc4EYDaDFX0qntW1&s=10",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSncClGVvyVmqADRxjZuNGWdrE6_RARJ9PbrweTFNjcDc4EYDaDFX0qntW1&s=10",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
