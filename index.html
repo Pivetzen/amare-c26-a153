@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amare - C26 - A153</title>
+    
+    <!-- Configurações para PWA / Tela Inicial (Android e iOS) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#b91c1c">
+    
+    <!-- Suporte PWA para iOS (Safari) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Amare">
+    <link rel="apple-touch-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSncClGVvyVmqADRxjZuNGWdrE6_RARJ9PbrweTFNjcDc4EYDaDFX0qntW1&s=10">
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSncClGVvyVmqADRxjZuNGWdrE6_RARJ9PbrweTFNjcDc4EYDaDFX0qntW1&s=10">
     <!-- Tailwind CSS -->
@@ -777,7 +788,7 @@
                 }
 
                 // Aniversário Ela
-                const calcEla = calcularIdade(c.idadeElaStr);
+                const calcEla = calcularIdade(c.idadeEleStr);
                 if (calcEla && calcEla.dtNasc && calcEla.dtNasc.getMonth() === mesAtual) {
                     comemorações.push({
                         emoji: '🎂',
@@ -861,11 +872,9 @@
             document.getElementById('modal-casal-nome').innerText = casal.nome || '';
             document.getElementById('modal-casal-bio').innerText = casal.bio ? `"${casal.bio}"` : '';
             
-            // Nomes Individuais nos rótulos
             if (casal.nomeEle) document.getElementById('modal-casal-rotulo-ele').innerText = `🤵 ${casal.nomeEle}`;
             if (casal.nomeEla) document.getElementById('modal-casal-rotulo-ela').innerText = `👰 ${casal.nomeEla}`;
 
-            // Idades e Aniversários Ele
             const calcEle = calcularIdade(casal.idadeEleStr);
             if (calcEle) {
                 document.getElementById('modal-casal-idade-ele').innerText = `${calcEle.idade} anos`;
@@ -875,7 +884,6 @@
                 document.getElementById('modal-casal-nasc-ele').innerText = '';
             }
 
-            // Idades e Aniversários Ela
             const calcEla = calcularIdade(casal.idadeElaStr);
             if (calcEla) {
                 document.getElementById('modal-casal-idade-ela').innerText = `${calcEla.idade} anos`;
