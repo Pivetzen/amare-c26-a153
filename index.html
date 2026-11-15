@@ -325,7 +325,7 @@
                     </div>
                 </div>
                 
-                <!-- SESSÃO FILHOS & PETS (LADO A LADO COM AS FOTOS NO MOBILE E DESKTOP) -->
+                <!-- SESSÃO FILHOS & PETS -->
                 <div class="grid grid-cols-1 gap-3 pt-1">
                     <!-- FILHOS -->
                     <div class="bg-red-50/50 p-3.5 rounded-2xl border border-red-100 space-y-2">
@@ -528,11 +528,15 @@
             };
 
             const cabecalhoOriginal = parseLinha(linhas[0]);
-            const cabecalho = cabecalhoOriginal.map(h => 
-                h.toLowerCase()
-                 .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                 .trim()
-            );
+            const contagemColunas = {};
+            const cabecalho = cabecalhoOriginal.map(h => {
+                const base = h.toLowerCase()
+                              .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                              .trim();
+                if (!base) return '';
+                contagemColunas[base] = (contagemColunas[base] || 0) + 1;
+                return contagemColunas[base] > 1 ? `${base}_${contagemColunas[base]}` : base;
+            });
 
             const dados = [];
             for (let i = 1; i < linhas.length; i++) {
@@ -540,7 +544,7 @@
                 const valores = parseLinha(linhas[i]);
                 const objeto = {};
                 cabecalho.forEach((col, index) => {
-                    objeto[col] = valores[index] || '';
+                    if (col) objeto[col] = valores[index] || '';
                 });
                 dados.push(objeto);
             }
@@ -550,6 +554,9 @@
         function pegarValor(obj, chavesPossiveis) {
             for (let chave of chavesPossiveis) {
                 const chaveNormalizada = chave.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                if (obj.hasOwnProperty(chaveNormalizada) && obj[chaveNormalizada] !== undefined) {
+                    return obj[chaveNormalizada];
+                }
                 for (let prop in obj) {
                     if (prop.includes(chaveNormalizada)) {
                         return obj[prop];
@@ -710,8 +717,8 @@
                 categoria: pegarValor(c, ['categoria', 'funcao', 'papel', 'tipo']),
                 foto: pegarValor(c, ['foto', 'imagem', 'link', 'url']),
                 bio: pegarValor(c, ['bio', 'historia', 'descricao', 'frase']),
-                idadeEleStr: pegarValor(c, ['nascimento ele', 'nasc ele', 'idade ele', 'ele']),
-                idadeElaStr: pegarValor(c, ['nascimento ela', 'nasc ela', 'idade ela', 'ela']),
+                idadeEleStr: c['nascimento'] || pegarValor(c, ['nascimento ele', 'nasc ele', 'idade ele']),
+                idadeElaStr: c['nascimento_2'] || pegarValor(c, ['nascimento ela', 'nasc ela', 'idade ela']),
                 filhos: pegarValor(c, ['filhos', 'filho']),
                 fotoFilhos: pegarValor(c, ['foto filhos', 'fotofilhos']),
                 pets: pegarValor(c, ['pets', 'pet', 'animais']),
@@ -768,8 +775,10 @@
 
         function renderizarComemoracoesMes(casais) {
             const container = document.getElementById('container-comemoracoes');
-            const mesAtual = new Date().getMonth();
-            const comemorações = [];
+            const hoje = new Date();
+            const mesAtual = hoje.getMonth();
+            const anoAtual = hoje.getFullYear();
+            const comemoracoes = [];
 
             casais.forEach(c => {
                 let nEle = c.nomeEle || (c.nome ? c.nome.split('e')[1] || 'Ele' : 'Ele');
@@ -778,52 +787,56 @@
                 // Aniversário Ele
                 const calcEle = calcularIdade(c.idadeEleStr);
                 if (calcEle && calcEle.dtNasc && calcEle.dtNasc.getMonth() === mesAtual) {
-                    comemorações.push({
+                    const idadeNoMes = anoAtual - calcEle.dtNasc.getFullYear();
+                    comemoracoes.push({
                         emoji: '🎂',
                         titulo: nEle.trim(),
                         subtitulo: 'Aniversário',
                         dia: calcEle.dtNasc.getDate(),
-                        detalhe: `${calcEle.idade} anos`
+                        detalhe: `${idadeNoMes} anos`
                     });
                 }
 
                 // Aniversário Ela
-                const calcEla = calcularIdade(c.idadeEleStr);
+                const calcEla = calcularIdade(c.idadeElaStr);
                 if (calcEla && calcEla.dtNasc && calcEla.dtNasc.getMonth() === mesAtual) {
-                    comemorações.push({
+                    const idadeNoMes = anoAtual - calcEla.dtNasc.getFullYear();
+                    comemoracoes.push({
                         emoji: '🎂',
                         titulo: nEla.trim(),
                         subtitulo: 'Aniversário',
                         dia: calcEla.dtNasc.getDate(),
-                        detalhe: `${calcEla.idade} anos`
+                        detalhe: `${idadeNoMes} anos`
                     });
                 }
 
-                // Aniversário de Casamento
+                // Aniversário de Casamento (Bodas de ano em ano)
                 if (c.dataCasamento) {
                     const dtCasal = converterDataParaObjeto(c.dataCasamento);
                     if (dtCasal && dtCasal.getMonth() === mesAtual) {
-                        const infoCasamento = calcularTempoCasamento(c.dataCasamento);
-                        const nomeBodas = obterNomeBodas(infoCasamento.anos);
-                        comemorações.push({
-                            emoji: '👩‍❤️‍👨',
-                            titulo: c.nome,
-                            subtitulo: nomeBodas,
-                            dia: dtCasal.getDate(),
-                            detalhe: infoCasamento.texto
-                        });
+                        const anosCompletando = anoAtual - dtCasal.getFullYear();
+                        if (anosCompletando >= 1) {
+                            const nomeBodas = obterNomeBodas(anosCompletando);
+                            comemoracoes.push({
+                                emoji: '👩‍❤️‍👨',
+                                titulo: c.nome,
+                                subtitulo: nomeBodas,
+                                dia: dtCasal.getDate(),
+                                detalhe: `${anosCompletando} ${anosCompletando === 1 ? 'ano' : 'anos'}`
+                            });
+                        }
                     }
                 }
             });
 
-            comemorações.sort((a, b) => a.dia - b.dia);
+            comemoracoes.sort((a, b) => a.dia - b.dia);
 
-            if (comemorações.length === 0) {
+            if (comemoracoes.length === 0) {
                 container.innerHTML = '<p class="text-stone-400 text-sm italic col-span-full py-2">Nenhuma comemoração registrada neste mês.</p>';
                 return;
             }
 
-            container.innerHTML = comemorações.map(item => `
+            container.innerHTML = comemoracoes.map(item => `
                 <div class="bg-red-50/60 border border-red-100 p-3 rounded-2xl flex items-center gap-3">
                     <span class="text-2xl flex-shrink-0">${item.emoji}</span>
                     <div class="flex-grow min-w-0">
